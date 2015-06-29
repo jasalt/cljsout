@@ -6,10 +6,9 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-3211"]
                  [quil "2.2.6" :exclusions [org.clojure/clojure]]
-                 ]
+                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
   :plugins [[lein-cljsbuild "1.0.5"]
-            [lein-figwheel "0.3.5"]
-            ]
+            [lein-figwheel "0.3.5"]]
   :source-paths ["src"]
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
   :cljsbuild {

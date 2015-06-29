@@ -3,7 +3,10 @@
      [quil.core :as q :include-macros true]
      [breakout.draw :as d]
      [quil.middleware :as m]
-     ))
+     [goog.dom :as dom]
+     [goog.events :as events]
+     [cljs.core.async :refer [put! chan <!]])
+    (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (enable-console-print!)
 
@@ -20,7 +23,7 @@
 
 (defn setup []
                                         ; Set frame rate to 30 frames per second.
-  (q/frame-rate 10)
+  (q/frame-rate 5)
                                         ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
                                         ; setup function returns initial state. It contains

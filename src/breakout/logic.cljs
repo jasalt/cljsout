@@ -1,5 +1,10 @@
-(ns breakout.logic)
-
+(ns breakout.logic
+  (:require [breakout.utils :refer [log]])
+  )
+(defonce debug-state (atom {}))
 (defn update-state [state]
-  {:color (mod (+ (:color state) 0.7) 255)
-   :angle (+ (:angle state) 0.1)})
+  (log state)
+  (reset! debug-state state)
+  ;;(update-in state [:angle] #(+ (:angle state) 0.1))
+  (assoc state :angle (+ (:angle state) 0.1))
+  )

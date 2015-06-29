@@ -22,10 +22,10 @@
                       {:width width
                        :height height}))
 
-(defonce game-state
-  (atom {:color 0
-         :angle 0
-         }))
+(defonce init-state
+  {:angle 0
+   :level (get-level 1)
+   })
 
 (defn on-js-reload []
   ;; optionally touch your game-state to force rerendering depending on
@@ -36,7 +36,8 @@
 (defn setup []
   (q/frame-rate 5)
   (q/color-mode :hsb)
-  game-state
+  (log "Starting")
+  init-state
   )
 
 (q/defsketch game-sketch

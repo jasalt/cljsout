@@ -1,8 +1,9 @@
-(ns breakout.utils)
+(ns breakout.utils
+  (:require [cljs.pprint :refer [pprint]])
+  )
 
 (defn log [msg]
-  (.log js/console "Logging")
-  (.log js/console msg)
+  (.log js/console (pprint msg))
   )
 
 (defonce config {:max-width 500

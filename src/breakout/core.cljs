@@ -24,7 +24,7 @@
 (defonce init-state
   {:angle 0
    :level (get-level 1)
-   :ball {:x 0.5 :y 0.5 :vx 1.0 :vy 0.74 :slow false}
+   :ball {:x 0.5, :y 0.5, :angle 0, :slow false}
    :paddle 0.5
    })
 
@@ -35,12 +35,14 @@
   )
 
 (defn stop-loop []
-  (q/with-sketch (q/get-sketch-by-id "game") (q/no-loop)))
+  (q/with-sketch (q/get-sketch-by-id "game") (q/no-loop))
+  )
 (defn continue-loop []
-  (q/with-sketch (q/get-sketch-by-id "game") (q/start-loop)))
+  (q/with-sketch (q/get-sketch-by-id "game") (q/start-loop))
+  )
 
 (defn setup []
-  (q/frame-rate 5)
+  (q/frame-rate 30)
   (q/color-mode :hsb)
   (log "Starting")
   init-state

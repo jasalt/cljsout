@@ -10,6 +10,14 @@
 
 (defonce input-state (atom {:stopped nil}))
 
+(defn mouse-moved [state event]
+  "Mouse position defines the central position of the pad.
+   Gives the real pixel position of mouse, so it's down scaled."
+  (assoc state :pad
+         (-> (:x event)
+             (/ (breakout.config/window :scale-factor))
+             (- (/ (breakout.config/game :pad-size) 2)))))
+
 (defn listen [el type]
   "Listen to dom element events and put them into channel."
   (let [out (chan)]

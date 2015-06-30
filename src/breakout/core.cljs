@@ -43,14 +43,10 @@
 
 (q/defsketch game-sketch
   :host "game"
-  :size [(* (window :scale-factor)
-          (+ (window :game-width)
-            (* 2 (window :padding))))
-         (* (window :scale-factor)
-          (+ (window :game-height)
-            (* 3 (window :padding))
-            (window :menu-height)))]
+  :size [(* (window :scale-factor) (window :game-width))
+         (* (window :scale-factor) (window :game-height))]
   :setup setup
   :update update-state
   :draw draw-state
+  :mouse-moved input/mouse-moved
   :middleware [m/fun-mode])

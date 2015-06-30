@@ -3,40 +3,17 @@
   (:require
    [quil.core :as q :include-macros true]
    [quil.middleware :as m]
-   [breakout.config :refer [window]]
+   [breakout.config :refer [window game]]
+   [breakout.utils :refer [log]]
+   [breakout.logic :as logic]
+   [breakout.input :refer [input-state]]
    ))
 
-;; TODO require instead? (without stackoverflowerror)
-;;(defonce prefs breakout.core/prefs)
-
-;; (defn ->px-pos
-;;   "Transform game object position in range 0.0 - 1.0 into screen pixel position.
-;;   Takes vector of two number elements or two number parameters.
-;;   Return value is vector [x y]."
-;;   ([tuple]
-;;    {:pre [(vector? tuple) (= 2 (count tuple))]}
-;;    (let [[x y] (->px-pos (first tuple) (second tuple))]
-;;      [x y])) ([x y]
-;;               {:pre [(number? x) (number? y)
-;;                      ;;(<= x 1.0) (<= y 1.0)
-;;                      ;;(>= x 0.0) (>= y 0.0)
-;;                      ]}
-;;               (let [w (prefs :window-width)
-;;                     h (prefs :window-height)]
-;;                 [(* w x) (* h y)])))
-
-;; (defn ->px [x]
-;;   "Transform size in range 0.0 - 1.0 into screen pixel dimensions."
-;;   {:pre [(number? x)]}
-;;   (let [w (prefs :window-width)
-;;         h (prefs :window-height)]
-;;     [(* w x) (* h y)]))
-
-;; (defn draw-ball [[x y]]
-;;   (q/fill "red")
-;;   (let [size (prefs :ball-size)]
-;;     (q/rect (- x (/ size 2)) (- y (/ size 2)) size size))
-;;   )
+(defn draw-ball [[x y]]
+  (q/fill "red")
+  (let [size (game :ball-size)]
+    (q/rect (- x (/ size 2)) (- y (/ size 2)) size size))
+  )
 
 ;;(defn draw-bricks [])
 
@@ -44,21 +21,39 @@
 ;;   (q/fill "red")
 ;;   (q/rect x y 50 7))
 
-;; (defn draw-pad [x y]
-;;   (q/fill "red")
-;;   (q/rect x y 60 10))
+(defn draw-brick [x y]
+  (let [color [255 50 255]]
+    (apply q/fill color)
+    (apply q/stroke color)
+    )
+  (q/rect x y 10 5)
+  )
+
+(defn draw-bricks [bricks]
+  (doseq [row bricks r (range (count bricks))]
+    ;;(logic/calc-bricks bricks)
+    nil
+    )
+  )
+
+(defn draw-pad [x]
+  (q/fill "red")
+  (q/stroke "red")
+  (q/rect x (- (window :game-height) 5)
+          (breakout.config/game :pad-size) 1))
 
 (defn draw-game [state]
   "Draw game in 100 x 160 size."
-  (q/fill 200)
-  (q/rect 0 0 (window :game-width) (window :game-height))
   ;; (draw-ball (->px-pos ((state :ball) :x)
   ;;                      ((state :ball) :y)))
+  (draw-pad (state :pad))
+  (draw-bricks (state :bricks))
   )
 
 (defn draw-hud [state]
   "Draw score display."
   (q/fill 0)
+  (q/stroke 0)
   (q/rect 0 0 (window :game-width) (window :menu-height))
   (q/fill 255)
   (q/text-font "monospace" (- (window :menu-height) 2))
@@ -68,22 +63,11 @@
 (defn draw-state [state]
   "Draw all canvas content"
   (q/scale (window :scale-factor))
-  (q/background 200)
+  (q/background 80)
+
+  (draw-game state)
+
   
-  (q/with-translation [(window :padding) (window :padding)]
-    (draw-game state))
-
-  (q/with-translation [(window :padding) (+ (* 2 (window :padding))
-                                            (window :game-height))]
-    (draw-hud state))
-
-  ;; (let [level (state :level)]
-  ;;   (doseq [row level y (range 10 (count level) 20)]
-  ;;     (doseq [brick row x (range 10 400 60)]
-  ;;       (if (nil? brick) (draw-tile x y))
-  ;;       )
-  ;;     ))
-
   ;; (let [angle (:angle state)
   ;;       x (* 150 (q/cos angle))
   ;;       y (* 150 (q/sin angle))]

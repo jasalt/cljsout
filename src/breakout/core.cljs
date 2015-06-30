@@ -18,13 +18,14 @@
 
 (enable-console-print!)
 
-(defonce properties (let [[width height] (get-window-size)]
-                      {:width width
-                       :height height}))
+(defonce properties {:width 400
+                     :height 500})
 
 (defonce init-state
   {:angle 0
    :level (get-level 1)
+   :ball {:x 0.5 :y 0.5 :vx 1.0 :vy 0.74 :slow false}
+   :paddle 0.5
    })
 
 (defn on-js-reload []
@@ -32,6 +33,11 @@
   ;; your application
   ;; (swap! game-state update-in [:__figwheel_counter] inc)
   )
+
+(defn stop-loop []
+  (q/with-sketch (q/get-sketch-by-id "game") (q/no-loop)))
+(defn continue-loop []
+  (q/with-sketch (q/get-sketch-by-id "game") (q/start-loop)))
 
 (defn setup []
   (q/frame-rate 5)

@@ -23,9 +23,9 @@
       "Third level parses correctly"))
 
 ;; "TODO Proper output should be tested as well with handled side effects.."
-(deftest draw-to-pixel-position
+(deftest draw-->px-pos
   (testing "that some bad inputs throw an exception"
-    (is (thrown? js/Error (draw/to-pixel-position [1 1 1])))
-    (is (thrown? js/Error (draw/to-pixel-position 1 2 3)))
-    (is (thrown? js/Error (draw/to-pixel-position 1 1.1)))
-    (is (thrown? js/Error (draw/to-pixel-position 1.1 1)))))
+    (is (thrown? js/Error (draw/->px-pos [1 1 1])))
+    (is (thrown? js/Error (draw/->px-pos 1 2 3)))
+    (is (thrown? js/Error (draw/->px-pos 1 1.1)))
+    (is (thrown? js/Error (draw/->px-pos 1.1 1)))))

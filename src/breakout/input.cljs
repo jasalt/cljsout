@@ -17,7 +17,7 @@
                    (fn [e] (put! out e)))
     out))
 
-(defn setup-input []
+(defn set-pause-listener []
   "Set listener for ui button."
   (let [input-chan (listen (dom/getElement "uiBtn") "click")]
     (log "Add input chan")

@@ -4,15 +4,15 @@
 (defonce debug-state (atom {}))
 
 ;;TODO
-(defn calculate-brick-positions [level]
-  "Return vector of all brick (top-left corner) locations."
-  (let [level [[true true true true true true]
-               [true true true nil nil true true true]
-               [nil nil true true true]]]
-    (loop [row level x-offset 0]
-      )
-    )
-  )
+;; (defn calculate-brick-positions [level]
+;;   "Return vector of all brick (top-left corner) locations."
+;;   (let [level [[true true true true true true]
+;;                [true true true nil nil true true true]
+;;                [nil nil true true true]]]
+;;     (loop [row level x-offset 0]
+;;       )
+;;     )
+;;   )
 
 (defn move-ball [ball]
   ;; move in angle to new pos

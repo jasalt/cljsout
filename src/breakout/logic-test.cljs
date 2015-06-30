@@ -10,7 +10,6 @@
     (let [old-ball {:x 0.5, :y 0.5, :angle 0, :slow false}
           new-ball (logic/move-ball old-ball)]
       (is (not (= old-ball new-ball)) "ball position should always change")
-      
       )
     )
   )

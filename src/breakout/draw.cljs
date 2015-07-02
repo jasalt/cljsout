@@ -6,7 +6,6 @@
    [breakout.config :refer [window game]]
    [breakout.utils :refer [log]]
    [breakout.logic :as logic]
-   [breakout.input :refer [input-state]]
    ))
 
 (defn draw-ball [[x y]]
@@ -37,17 +36,17 @@
   )
 
 (defn draw-pad [x]
-  (q/fill "red")
+  (q/fill 0 0 0)
   (q/stroke "red")
   (q/rect x (- (window :game-height) 5)
-          (breakout.config/game :pad-size) 1))
+          (game :pad-size) 1))
 
 (defn draw-game [state]
   "Draw game in 100 x 160 size."
   ;; (draw-ball (->px-pos ((state :ball) :x)
   ;;                      ((state :ball) :y)))
   (draw-pad (state :pad))
-  (draw-bricks (state :bricks))
+  ;; (draw-bricks (state :bricks))
   )
 
 (defn draw-hud [state]
@@ -62,12 +61,12 @@
 
 (defn draw-state [state]
   "Draw all canvas content"
-  (q/scale (window :scale-factor))
-  (q/background 80)
+  ;;(q/scale (window :scale-factor))
+  ;;(q/background 80)
 
   (draw-game state)
 
-  
+
   ;; (let [angle (:angle state)
   ;;       x (* 150 (q/cos angle))
   ;;       y (* 150 (q/sin angle))]

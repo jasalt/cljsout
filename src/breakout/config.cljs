@@ -5,7 +5,7 @@
                  :game-height 160
                  :padding 2 ;; on all sides
                  :menu-height 8 ;; on bottom
-                 :frame-rate 10
+                 :frame-rate 60
                  :scale-factor 3 ;; TODO calculate with utils/get-window-size
                  })
 

@@ -1,0 +1,4 @@
+* TODO 
+Use only canvas
+https://www.diigo.com/user/jasalt/canvas
+* TODO Test perforformance on mobile browser

@@ -30,49 +30,39 @@
                        (assoc :y (@pad :y))))
                  (fn [ctx val] ;; Draw
                    (-> ctx
-                       canvas/save
-                       ;;(canvas/translate (:x val) (:y val))
                        (canvas/fill-style "red")
                        (canvas/fill-rect {:x (:x val) :y (:y val)
-                                            :w 50 :h 10})
-                       ;;(canvas/begin-path)
-                       ;;(canvas/move-to 50 0)
-                       ;;(canvas/line-to 0 -15)
-                       ;;(canvas/line-to 0 15)
-                       ;;(canvas/fill)
-                       canvas/restore))))
+                                          :w 50 :h 10})))))
 
 (declare move-ball!)
-(defn make-ball-entity [monet-canvas key shape]
-  (canvas/entity {:x (shape-x shape)
-                  :y (shape-y shape)
-                  :angle (shape-angle shape)}
+(defn ball-entity [monet-canvas ball]
+  (canvas/entity {:x (shape-x ball)
+                  :y (shape-y ball)
+                  :angle (shape-angle ball)}
                  (fn [value]
                    ;; Remove after out of view
-                   (when (not
-                          (geom/contained?
-                           {:x 0 :y 0
-                            :w (.-width (:canvas monet-canvas))
-                            :h (.-height (:canvas monet-canvas))}
-                           {:x (shape-x shape)
-                            :y (shape-y shape)
-                            :r 5}))
-                     (canvas/remove-entity monet-canvas key))
-                   (move-ball! shape)
+                   ;; (when (not
+                   ;;        (geom/contained?
+                   ;;         {:x 0 :y 0
+                   ;;          :w (.-width (:canvas monet-canvas))
+                   ;;          :h (.-height (:canvas monet-canvas))}
+                   ;;         {:x (shape-x shape)
+                   ;;          :y (shape-y shape)
+                   ;;          :r 1}))
+                   ;;   (canvas/remove-entity monet-canvas key))
+                   ;;(move-ball! ball)
                    (-> value
-                       (assoc :x (shape-x shape))
-                       (assoc :y (shape-y shape))
-                       (assoc :angle (shape-angle shape))))
+                       (assoc :x (shape-x ball))
+                       (assoc :y (shape-y ball))
+                       (assoc :angle (shape-angle ball))))
                  (fn [ctx val]
                    (-> ctx
                        canvas/save
                        (canvas/translate (:x val) (:y val))
                        (canvas/rotate (:angle val))
-                       (canvas/fill-style "red")
-                       (canvas/circle {:x 10 :y 0 :r 5})
+                       (canvas/fill-style "blue")
+                       (canvas/circle {:x 100 :y 100 :r 100})
                        canvas/restore))))
-
-
 
 (def speed 200)
 (defn calculate-x [angle]
@@ -94,7 +84,8 @@
                                        (shape-angle ball))))
                      (update-in [:y]
                                 #(+ % (calculate-y
-                                       (shape-angle ball)))))))))
+                                       (shape-angle ball)))))))
+    ))
 
 (defn move-right! [pad]
   "Move pad right."
@@ -106,14 +97,3 @@
   (swap! pad (fn [xy]
                (-> xy
                    (update-in [:x] dec)))))
-
-(defn add-ball! [monet-canvas]
-  "Creates ball entity. Ball gets a unique key so it can be removed.
-   TODO create bricks with unique key used for breaking."
-  (let [entity-key (keyword (gensym "ball"))
-        data (shape-data 10
-                         10
-                         0) ;; TODO
-        ball (make-ball-entity monet-canvas entity-key data)]
-    (log "Adding ball")
-    (canvas/add-entity monet-canvas entity-key ball)))

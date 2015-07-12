@@ -5,8 +5,7 @@
      [reagi.core :as r]
 
      [breakout.utils :refer [log]]
-     [breakout.entities :as entities :refer [add-ball! move-ball!
-                                             move-left! move-right!]]
+     [breakout.entities :as entities :refer [move-ball! move-left! move-right!]]
      ))
 
 (enable-console-print!) ;; Route prints to console
@@ -17,19 +16,20 @@
 (def canvas-dom (.getElementById js/document "game"))
 (def game-canvas (canvas/init canvas-dom "2d"))
 
-;; (def pad (entities/shape-data
-;;           (/ (.-width (:canvas game-canvas)) 2)
-;;           (/ (.-height (:canvas game-canvas)) 2)
-;;           100)
-;;   )
 
 (def pad (atom {:x (/ (.-width (:canvas game-canvas)) 2)
-             :y (/ (.-height (:canvas game-canvas)) 2)}))
+                :y (/ (.-height (:canvas game-canvas)) 2)}))
 
 (def pad-entity (entities/pad-entity pad))
-;;(def ball-entity (entities/make-ball-entity))
 
+(def ball {:pos (atom {:x 10 :y 10})
+           :angle (atom 50)})
+
+(def ball-entity (entities/ball-entity game-canvas ball))
+
+(canvas/add-entity game-canvas :ball-entity ball-entity)
 (canvas/add-entity game-canvas :pad-entity pad-entity)
+
 (canvas/draw-loop game-canvas)
 
 
@@ -92,15 +92,13 @@
 ;;(filter-map #{UP} pad)
 (filter-map #{RIGHT} move-right! pad)
 (filter-map #{LEFT} move-left! pad)
-(filter-map #{SPACE} add-ball! game-canvas pad)
+(filter-map #{SPACE} move-ball! ball)
 ;;(filter-map #{PAUSE} pad)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(print "yay")
 (defn on-js-reload []
   ;; optionally touch your game-state to force rerendering depending on
   ;; your application

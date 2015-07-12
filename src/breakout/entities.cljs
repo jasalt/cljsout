@@ -22,22 +22,24 @@
   )
 
 (defn pad-entity [pad]
-  (canvas/entity {:x (shape-x pad)
-                  :y (shape-y pad)}
+  (canvas/entity {:x (@pad :x)
+                  :y (@pad :y)}
                  (fn [value] ;; Update
                    (-> value
-                       (assoc :x (shape-x pad))
-                       (assoc :y (shape-y pad))))
+                       (assoc :x (@pad :x))
+                       (assoc :y (@pad :y))))
                  (fn [ctx val] ;; Draw
                    (-> ctx
                        canvas/save
-                       (canvas/translate (:x val) (:y val))
+                       ;;(canvas/translate (:x val) (:y val))
                        (canvas/fill-style "red")
-                       (canvas/begin-path)
-                       (canvas/move-to 50 0)
-                       (canvas/line-to 0 -15)
-                       (canvas/line-to 0 15)
-                       (canvas/fill)
+                       (canvas/fill-rect {:x (:x val) :y (:y val)
+                                            :w 50 :h 10})
+                       ;;(canvas/begin-path)
+                       ;;(canvas/move-to 50 0)
+                       ;;(canvas/line-to 0 -15)
+                       ;;(canvas/line-to 0 15)
+                       ;;(canvas/fill)
                        canvas/restore))))
 
 (declare move-ball!)
@@ -94,27 +96,16 @@
                                 #(+ % (calculate-y
                                        (shape-angle ball)))))))))
 
-
-;; (defn rotate! [shape f]
-;;   (swap! (:angle shape) #(f % (/ (/ Math/PI 3) 20))))
-;; (defn rotate-right! [shape]
-;;   (rotate! shape +))
-;; (defn rotate-left! [shape]
-;;   (rotate! shape -))
-
 (defn move-right! [pad]
   "Move pad right."
-  (let [pos (:pos pad)]
-    (swap! pos (fn [xy]
-                 (-> xy
-                     (update-in [:x] inc))))))
+  (swap! pad (fn [xy]
+               (-> xy (update-in [:x] inc)))))
 
 (defn move-left! [pad]
   "Move pad right."
-  (let [pos (:pos pad)]
-    (swap! pos (fn [xy]
-                 (-> xy
-                     (update-in [:x] dec))))))
+  (swap! pad (fn [xy]
+               (-> xy
+                   (update-in [:x] dec)))))
 
 (defn add-ball! [monet-canvas]
   "Creates ball entity. Ball gets a unique key so it can be removed.

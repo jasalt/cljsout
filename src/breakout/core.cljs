@@ -1,35 +1,30 @@
 (ns ^:figwheel-always breakout.core
     (:require
-     [cljs.core.async :refer [put! chan <!]]
-     [clojure.string :as s]
-
-     [goog.dom :as dom]
+     [clojure.set :as set]
+     [monet.canvas :as canvas]
+     [reagi.core :as r]
 
      [breakout.utils :refer [log]]
-     [monet.canvas :as canvas]
-     [clojure.set :as set]
-     [breakout.entities :as entities
-      :refer [move-ball!
-              ;;rotate-left! rotate-right!
-              add-ball!
-              move-left! move-right!]]
-     [reagi.core :as r]
-     ;;[breakout.config :refer [window] :as config]
-     ;;[breakout.input :as input]
-
-     ;;[breakout.logic :refer [update-state]]
-     ;;[breakout.draw :refer [draw-state]]
+     [breakout.entities :as entities :refer [add-ball! move-ball!
+                                             move-left! move-right!]]
      ))
 
-(enable-console-print!)
+(enable-console-print!) ;; Route prints to console
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Setup game area and entities
 
 (def canvas-dom (.getElementById js/document "game"))
 (def game-canvas (canvas/init canvas-dom "2d"))
-;; (def ctx-dom (.getCtx canvas-dom))
-(def pad (entities/shape-data
-          (/ (.-width (:canvas game-canvas)) 2)
-          (/ (.-height (:canvas game-canvas)) 2)
-          100))
+
+;; (def pad (entities/shape-data
+;;           (/ (.-width (:canvas game-canvas)) 2)
+;;           (/ (.-height (:canvas game-canvas)) 2)
+;;           100)
+;;   )
+
+(def pad (atom {:x (/ (.-width (:canvas game-canvas)) 2)
+             :y (/ (.-height (:canvas game-canvas)) 2)}))
 
 (def pad-entity (entities/pad-entity pad))
 ;;(def ball-entity (entities/make-ball-entity))
@@ -104,6 +99,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+(print "yay")
 (defn on-js-reload []
   ;; optionally touch your game-state to force rerendering depending on
   ;; your application

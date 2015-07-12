@@ -22,7 +22,7 @@
 
 (def ball (atom {:x (/ (.-width (:canvas game-canvas)) 3)
                  :y (/ (.-height (:canvas game-canvas)) 3)
-                 :angle 50}))
+                 :angle 0}))
 
 (def pad-entity (entities/pad-entity pad))
 (def ball-entity (entities/ball-entity game-canvas ball))

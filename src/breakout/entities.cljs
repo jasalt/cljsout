@@ -6,20 +6,9 @@
    [monet.canvas :as canvas]
    [monet.geometry :as geom]))
 
-(defn shape-x [shape]
-  (-> shape :pos deref :x))
-
-(defn shape-y [shape]
-  (-> shape :pos deref :y))
-
-(defn shape-angle [shape]
-  @(:angle shape))
-
-(defn shape-data [x y angle]
-  {:pos   (atom {:x x :y y})
-   :angle (atom angle)
-   }
-  )
+;; (defn shape-x [shape] (-> shape :pos deref :x))
+;; (defn shape-y [shape] (-> shape :pos deref :y))
+;; (defn shape-angle [shape] @(:angle shape))
 
 (defn pad-entity [pad]
   (canvas/entity {:x (@pad :x)
@@ -41,17 +30,22 @@
                   :angle (@ball :angle)}
                  (fn [value]
                    ;; Remove after out of view
-                   (if (not
-                        (geom/contained?
-                         {:x 0 :y 0
-                          :w (.-width (:canvas monet-canvas))
-                          :h (.-height (:canvas monet-canvas))}
-                         {:x (@ball :x)
-                          :y (@ball :y)
-                          :r 5}))
-                     nil
-                     (move-ball! ball)
+                   (let [ball-x (@ball :x)
+                         ball-y (@ball :y)
+                         border-bottom (.-height (:canvas monet-canvas))
+                         border-top 0
+                         border-right (.-width (:canvas monet-canvas))
+                         border-left 0]
+                     ;;(println (str "x y" ball-x " " ball-y))
+                     (cond
+                       (> ball-y border-bottom) nil
+                       (< ball-y border-top) nil ;; mirror-y
+                       (< ball-x border-left) nil
+                       (> ball-x border-right) nil ;; mirror-x
+                       :else (move-ball! ball)
+                       )
                      )
+                   ;;(move-ball! ball)
                    (-> value
                        (assoc :x (@ball :x))
                        (assoc :y (@ball :y))
@@ -83,8 +77,6 @@
                                #(+ % (calculate-y
                                       (@ball :angle)))))))
   )
-
-(defn check-border-collisions [ball])
 
 (defn move-right! [pad]
   "Move pad right."

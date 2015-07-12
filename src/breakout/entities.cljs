@@ -41,16 +41,17 @@
                   :angle (@ball :angle)}
                  (fn [value]
                    ;; Remove after out of view
-                   (when (not
-                          (geom/contained?
-                           {:x 0 :y 0
-                            :w (.-width (:canvas monet-canvas))
-                            :h (.-height (:canvas monet-canvas))}
-                           {:x (@ball :x)
-                            :y (@ball :y)
-                            :r 5}))
-                     (log "OHI"))
-                   ;;(move-ball! ball)
+                   (if (not
+                        (geom/contained?
+                         {:x 0 :y 0
+                          :w (.-width (:canvas monet-canvas))
+                          :h (.-height (:canvas monet-canvas))}
+                         {:x (@ball :x)
+                          :y (@ball :y)
+                          :r 5}))
+                     nil
+                     (move-ball! ball)
+                     )
                    (-> value
                        (assoc :x (@ball :x))
                        (assoc :y (@ball :y))
@@ -61,7 +62,7 @@
                        (canvas/fill-rect {:x (:x val) :y (:y val)
                                           :w 3 :h 3})))))
 
-(def speed 200)
+(def speed 100)
 (defn calculate-x [angle]
   (* speed (/ (* (Math/cos angle)
                  Math/PI)
@@ -73,16 +74,17 @@
 
 (defn move-ball! [ball]
   ;; TODO move function for ball
-  (let [pos (:pos ball)]
-    (swap! pos (fn [xy]
-                 (-> xy
-                     (update-in [:x]
-                                #(+ % (calculate-x
-                                       (shape-angle ball))))
-                     (update-in [:y]
-                                #(+ % (calculate-y
-                                       (shape-angle ball)))))))
-    ))
+  (swap! ball (fn [xy]
+                (-> xy
+                    (update-in [:x]
+                               #(+ % (calculate-x
+                                      (@ball :angle))))
+                    (update-in [:y]
+                               #(+ % (calculate-y
+                                      (@ball :angle)))))))
+  )
+
+(defn check-border-collisions [ball])
 
 (defn move-right! [pad]
   "Move pad right."

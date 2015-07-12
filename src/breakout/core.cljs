@@ -32,18 +32,22 @@
           100))
 
 (def pad-entity (entities/pad-entity pad))
+;;(def ball-entity (entities/make-ball-entity))
 
 (canvas/add-entity game-canvas :pad-entity pad-entity)
 (canvas/draw-loop game-canvas)
 
-;; Keys that control the game
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Setup controls
 
 (def UP    38)
 (def RIGHT 39)
 (def LEFT  37)
-(def BALL  32) ;; space
+(def SPACE 32)
 (def PAUSE 80) ;; p
-
 
 ;;;; Separate streams for keydowns and keyups
 
@@ -58,7 +62,6 @@
     (set! (.-onkeyup js/document)
           #(r/deliver out [::up (.-keyCode %)]))
     out))
-
 
 ;; Merge key events into single event stream that
 ;; reduces active keys into set and gets updated every 25 ms.
@@ -94,11 +97,12 @@
 ;;(filter-map #{UP} pad)
 (filter-map #{RIGHT} move-right! pad)
 (filter-map #{LEFT} move-left! pad)
-(filter-map #{BALL} add-ball! pad)
+(filter-map #{SPACE} add-ball! game-canvas pad)
 ;;(filter-map #{PAUSE} pad)
 
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn on-js-reload []
   ;; optionally touch your game-state to force rerendering depending on

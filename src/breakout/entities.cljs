@@ -1,8 +1,10 @@
 ;; Define game entities.
 ;; Imitating Clojure Reactive Programming book example.
 (ns breakout.entities
-  (:require [monet.canvas :as canvas]
-            [monet.geometry :as geom]))
+  (:require
+   [breakout.utils :refer [log]]
+   [monet.canvas :as canvas]
+   [monet.geometry :as geom]))
 
 (defn shape-x [shape]
   (-> shape :pos deref :x))
@@ -38,7 +40,7 @@
                        (canvas/fill)
                        canvas/restore))))
 
-(declare move-forward!)
+(declare move-ball!)
 (defn make-ball-entity [monet-canvas key shape]
   (canvas/entity {:x (shape-x shape)
                   :y (shape-y shape)
@@ -54,7 +56,7 @@
                             :y (shape-y shape)
                             :r 5}))
                      (canvas/remove-entity monet-canvas key))
-                   (move-forward! shape)
+                   (move-ball! shape)
                    (-> value
                        (assoc :x (shape-x shape))
                        (assoc :y (shape-y shape))
@@ -114,12 +116,13 @@
                  (-> xy
                      (update-in [:x] dec))))))
 
-(defn add-ball! [monet-canvas pad]
+(defn add-ball! [monet-canvas]
   "Creates ball entity. Ball gets a unique key so it can be removed.
    TODO create bricks with unique key used for breaking."
-  (let [entity-key (keyword (gensym "bullet"))
-        data (shape-data (shape-x pad)
-                         (shape-y pad)
-                         (shape-angle pad)) ;; TODO
+  (let [entity-key (keyword (gensym "ball"))
+        data (shape-data 10
+                         10
+                         0) ;; TODO
         ball (make-ball-entity monet-canvas entity-key data)]
+    (log "Adding ball")
     (canvas/add-entity monet-canvas entity-key ball)))

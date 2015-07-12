@@ -16,22 +16,21 @@
 (def canvas-dom (.getElementById js/document "game"))
 (def game-canvas (canvas/init canvas-dom "2d"))
 
-
+;; Initial values for game entities
 (def pad (atom {:x (/ (.-width (:canvas game-canvas)) 2)
                 :y (/ (.-height (:canvas game-canvas)) 2)}))
 
+(def ball (atom {:x (/ (.-width (:canvas game-canvas)) 3)
+                 :y (/ (.-height (:canvas game-canvas)) 3)
+                 :angle 50}))
+
 (def pad-entity (entities/pad-entity pad))
-
-(def ball {:pos (atom {:x 10 :y 10})
-           :angle (atom 50)})
-
 (def ball-entity (entities/ball-entity game-canvas ball))
 
 (canvas/add-entity game-canvas :ball-entity ball-entity)
 (canvas/add-entity game-canvas :pad-entity pad-entity)
 
 (canvas/draw-loop game-canvas)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

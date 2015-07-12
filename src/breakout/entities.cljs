@@ -36,33 +36,30 @@
 
 (declare move-ball!)
 (defn ball-entity [monet-canvas ball]
-  (canvas/entity {:x (shape-x ball)
-                  :y (shape-y ball)
-                  :angle (shape-angle ball)}
+  (canvas/entity {:x (@ball :x)
+                  :y (@ball :y)
+                  :angle (@ball :angle)}
                  (fn [value]
                    ;; Remove after out of view
-                   ;; (when (not
-                   ;;        (geom/contained?
-                   ;;         {:x 0 :y 0
-                   ;;          :w (.-width (:canvas monet-canvas))
-                   ;;          :h (.-height (:canvas monet-canvas))}
-                   ;;         {:x (shape-x shape)
-                   ;;          :y (shape-y shape)
-                   ;;          :r 1}))
-                   ;;   (canvas/remove-entity monet-canvas key))
+                   (when (not
+                          (geom/contained?
+                           {:x 0 :y 0
+                            :w (.-width (:canvas monet-canvas))
+                            :h (.-height (:canvas monet-canvas))}
+                           {:x (@ball :x)
+                            :y (@ball :y)
+                            :r 5}))
+                     (log "OHI"))
                    ;;(move-ball! ball)
                    (-> value
-                       (assoc :x (shape-x ball))
-                       (assoc :y (shape-y ball))
-                       (assoc :angle (shape-angle ball))))
+                       (assoc :x (@ball :x))
+                       (assoc :y (@ball :y))
+                       (assoc :angle (@ball :angle))))
                  (fn [ctx val]
                    (-> ctx
-                       canvas/save
-                       (canvas/translate (:x val) (:y val))
-                       (canvas/rotate (:angle val))
                        (canvas/fill-style "blue")
-                       (canvas/circle {:x 100 :y 100 :r 100})
-                       canvas/restore))))
+                       (canvas/fill-rect {:x (:x val) :y (:y val)
+                                          :w 3 :h 3})))))
 
 (def speed 200)
 (defn calculate-x [angle]

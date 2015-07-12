@@ -68,6 +68,8 @@
                        (canvas/circle {:x 10 :y 0 :r 5})
                        canvas/restore))))
 
+
+
 (def speed 200)
 (defn calculate-x [angle]
   (* speed (/ (* (Math/cos angle)
@@ -88,6 +90,10 @@
                      (update-in [:y]
                                 #(f % (calculate-y
                                        (shape-angle shape)))))))))
+(defn move-forward! [shape]
+  (move! shape +)
+  )
+
 (defn rotate! [shape f]
   (swap! (:angle shape) #(f % (/ (/ Math/PI 3) 20))))
 

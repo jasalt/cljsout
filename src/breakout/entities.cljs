@@ -23,7 +23,7 @@
                        (canvas/fill-rect {:x (:x val) :y (:y val)
                                           :w 50 :h 10})))))
 
-(declare move-ball!)
+(declare move-ball! mirror-horizontal! mirror-vertical!)
 (defn ball-entity [monet-canvas ball]
   (canvas/entity {:x (@ball :x)
                   :y (@ball :y)
@@ -40,8 +40,8 @@
                      (cond
                        (> ball-y border-bottom) nil
                        (< ball-y border-top) nil ;; mirror-y
-                       (< ball-x border-left) nil
-                       (> ball-x border-right) nil ;; mirror-x
+                       (< ball-x border-left) (mirror-horizontal! ball)
+                       (> ball-x border-right) (mirror-horizontal! ball) ;; mirror-x
                        :else (move-ball! ball)
                        )
                      )
@@ -77,6 +77,20 @@
                                #(+ % (calculate-y
                                       (@ball :angle)))))))
   )
+
+;;TODO
+(defn mirror-horizontal! [ball]
+  (let [angle (@ball :angle)]
+    ;; (swap! ball (fn [ball]
+    ;;               (-> ball
+    ;;                   (update-in [:angle]
+    ;;                              #(+ % (calculate-x
+    ;;                                     (@ball :angle)))))))
+    (print angle)
+    )
+  )
+(defn mirror-vertical! [ball]
+  nil)
 
 (defn move-right! [pad]
   "Move pad right."

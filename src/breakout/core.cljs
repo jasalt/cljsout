@@ -9,8 +9,10 @@
      [monet.canvas :as canvas]
      [clojure.set :as set]
      [breakout.entities :as entities
-      :refer [move-forward! rotate-left! ;; move-backward!
-              rotate-right! add-ball!]]
+      :refer [move-ball!
+              ;;rotate-left! rotate-right!
+              add-ball!
+              move-left! move-right!]]
      [reagi.core :as r]
      ;;[breakout.config :refer [window] :as config]
      ;;[breakout.input :as input]
@@ -33,8 +35,6 @@
 
 (canvas/add-entity game-canvas :pad-entity pad-entity)
 (canvas/draw-loop game-canvas)
-
-
 
 ;; Keys that control the game
 
@@ -92,9 +92,9 @@
      (r/map pause!))
 
 ;;(filter-map #{UP} pad)
-(filter-map #{RIGHT} move-forward! pad)
-(filter-map #{LEFT} move-forward! pad)
-;;(filter-map #{BALL} pad)
+(filter-map #{RIGHT} move-right! pad)
+(filter-map #{LEFT} move-left! pad)
+(filter-map #{BALL} add-ball! pad)
 ;;(filter-map #{PAUSE} pad)
 
 

@@ -80,28 +80,39 @@
                  Math/PI)
               180)))
 
-(defn move! [shape f]
-  (let [pos (:pos shape)]
+(defn move-ball! [ball]
+  ;; TODO move function for ball
+  (let [pos (:pos ball)]
     (swap! pos (fn [xy]
                  (-> xy
                      (update-in [:x]
-                                #(f % (calculate-x
-                                       (shape-angle shape))))
+                                #(+ % (calculate-x
+                                       (shape-angle ball))))
                      (update-in [:y]
-                                #(f % (calculate-y
-                                       (shape-angle shape)))))))))
-(defn move-forward! [shape]
-  (move! shape +)
-  )
+                                #(+ % (calculate-y
+                                       (shape-angle ball)))))))))
 
-(defn rotate! [shape f]
-  (swap! (:angle shape) #(f % (/ (/ Math/PI 3) 20))))
 
-(defn rotate-right! [shape]
-  (rotate! shape +))
+;; (defn rotate! [shape f]
+;;   (swap! (:angle shape) #(f % (/ (/ Math/PI 3) 20))))
+;; (defn rotate-right! [shape]
+;;   (rotate! shape +))
+;; (defn rotate-left! [shape]
+;;   (rotate! shape -))
 
-(defn rotate-left! [shape]
-  (rotate! shape -))
+(defn move-right! [pad]
+  "Move pad right."
+  (let [pos (:pos pad)]
+    (swap! pos (fn [xy]
+                 (-> xy
+                     (update-in [:x] inc))))))
+
+(defn move-left! [pad]
+  "Move pad right."
+  (let [pos (:pos pad)]
+    (swap! pos (fn [xy]
+                 (-> xy
+                     (update-in [:x] dec))))))
 
 (defn add-ball! [monet-canvas pad]
   "Creates ball entity. Ball gets a unique key so it can be removed.

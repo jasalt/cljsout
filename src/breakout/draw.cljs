@@ -1,4 +1,4 @@
-;; Old draw functions
+;; Old draw functions TODO remove
 (ns breakout.draw
   (:require
    [breakout.utils :refer [log]]

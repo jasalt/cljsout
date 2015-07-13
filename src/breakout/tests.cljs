@@ -29,3 +29,12 @@
 ;;     (is (thrown? js/Error (draw/->px-pos 1 2 3)))
 ;;     (is (thrown? js/Error (draw/->px-pos 1 1.1)))
 ;;     (is (thrown? js/Error (draw/->px-pos 1.1 1)))))
+
+;; (deftest move-ball
+;;   (testing "ball position calculations"
+;;     (let [old-ball {:x 0.5, :y 0.5, :angle 0, :slow false}
+;;           new-ball (logic/move-ball old-ball)]
+;;       (is (not (= old-ball new-ball)) "ball position should always change")
+;;       )
+;;     )
+;;   )

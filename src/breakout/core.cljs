@@ -5,7 +5,8 @@
      [reagi.core :as r]
 
      [breakout.utils :refer [log]]
-     [breakout.entities :as entities :refer [move-ball! move-left! move-right!]]
+     [breakout.entities :as entities :refer [move-ball! move-left! move-right!
+                                             move-to!]]
      ))
 
 (enable-console-print!) ;; Route prints to console
@@ -67,7 +68,12 @@
 (def mouse-position-stream
   (->> (mouse-move-stream)
        (r/uniq) ;; Drop duplicate events
-       (r/map #(log %))))
+       (r/map #(do ;;(log (str "pad: " %))
+                   (move-to! pad %)
+                   ;;(swap! pad assoc :x %)
+                   ))
+       
+       ))
 
 ;; Merge key events into single event stream that
 ;; reduces active keys into set and gets updated every 25 ms.

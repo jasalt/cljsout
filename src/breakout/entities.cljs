@@ -88,11 +88,13 @@
 
 (defn move-right! [pad]
   "Move pad right."
-  (swap! pad (fn [xy]
-               (-> xy (update-in [:x] inc)))))
+  (swap! pad update-in [:x] inc))
 
 (defn move-left! [pad]
   "Move pad right."
-  (swap! pad (fn [xy]
-               (-> xy
-                   (update-in [:x] dec)))))
+  (swap! pad update-in [:x] dec))
+
+(defn move-to! [pad pos]
+  "Move pad to given position."
+  (swap! pad assoc :x pos))
+

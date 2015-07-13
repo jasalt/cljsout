@@ -1,2 +1,13 @@
 * Draw pad
 * Use input for draw pos
+* Canvas Benchmark
+http://www.kevs3d.co.uk/dev/canvasmark/
+| Machine      | Browser      | Score | Notes                 |
+|--------------+--------------+-------+-----------------------|
+| TP           | Chrome 43    | 10117 |                       |
+| TP           | FF           |  6887 |                       |
+| MBP          | Chrome 43    | 10441 |                       |
+| MBP          | Safari       |  8731 |                       |
+| CM12 Android | Chrome       |  3762 | Blur test not working |
+| CM12 Android | AOSP Browser |  3240 |                       |
+|              |              |       |                       |

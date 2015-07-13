@@ -25,7 +25,7 @@
                  :angle (+ Math/PI 0.2)}))
 
 (def pad-entity (entities/pad-entity pad))
-(def ball-entity (entities/ball-entity game-canvas ball))
+(def ball-entity (entities/ball-entity game-canvas ball pad))
 
 (canvas/add-entity game-canvas :ball-entity ball-entity)
 (canvas/add-entity game-canvas :pad-entity pad-entity)
@@ -57,6 +57,18 @@
           #(r/deliver out [::up (.-keyCode %)]))
     out))
 
+(defn mouse-move-stream []
+  (let [out (r/events [::x 50])
+        game-canvas (.getElementById js/document "game")]
+    (set! (.-onmousemove game-canvas)
+          #(r/deliver out (.-clientX %)))
+    out))
+
+(def mouse-position-stream
+  (->> (mouse-move-stream)
+       (r/uniq) ;; Drop duplicate events
+       (r/map #(log %))))
+
 ;; Merge key events into single event stream that
 ;; reduces active keys into set and gets updated every 25 ms.
 
@@ -87,6 +99,7 @@
      (r/filter (partial some #{PAUSE}))
      (r/throttle 100) ;; simple debounce
      (r/map pause!))
+
 
 ;;(filter-map #{UP} pad)
 (filter-map #{RIGHT} move-right! pad)

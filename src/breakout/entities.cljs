@@ -6,10 +6,6 @@
    [monet.canvas :as canvas]
    [monet.geometry :as geom]))
 
-;; (defn shape-x [shape] (-> shape :pos deref :x))
-;; (defn shape-y [shape] (-> shape :pos deref :y))
-;; (defn shape-angle [shape] @(:angle shape))
-
 (defn pad-entity [pad]
   (canvas/entity {:x (@pad :x)
                   :y (@pad :y)}
@@ -24,7 +20,7 @@
                                           :w 50 :h 10})))))
 
 (declare move-ball! mirror-horizontal! mirror-vertical!)
-(defn ball-entity [monet-canvas ball]
+(defn ball-entity [monet-canvas ball pad]
   (canvas/entity {:x (@ball :x)
                   :y (@ball :y)
                   :angle (@ball :angle)}
@@ -36,13 +32,12 @@
                          border-top 0
                          border-right (.-width (:canvas monet-canvas))
                          border-left 0]
-                     ;;(println (str "x y" ball-x " " ball-y))
-                     (cond
+                     (cond ;; Handle Wall collisions
                        (> ball-y border-bottom) (mirror-horizontal! ball)
                        (< ball-y border-top) (mirror-horizontal! ball)
                        (< ball-x border-left) (mirror-vertical! ball)
                        (> ball-x border-right) (mirror-vertical! ball)
-                       ;;:else 
+                       (geom/collision? @ball @pad) (mirror-vertical! ball)
                        )
                      )
                    (move-ball! ball)
@@ -61,7 +56,8 @@
                        ;;(canvas/text {:text (str "y: " (:y val)) :x 2 :y 190})
                        ))))
 
-(def speed 200)
+(def speed 100)
+
 (defn calculate-x [angle]
   (* speed (/ (* (Math/cos angle)
                  Math/PI)
@@ -81,7 +77,6 @@
                                #(+ % (calculate-y
                                       (@ball :angle)))))))
   )
-
 
 (defn mirror-vertical! [ball]
   (let [angle (@ball :angle)]

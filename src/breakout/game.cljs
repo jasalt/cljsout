@@ -1,0 +1,38 @@
+(ns breakout.game
+  (:require
+   [clojure.set :as set]
+   [monet.canvas :as canvas]
+   [reagi.core :as r]
+
+   [breakout.utils :refer [log]]
+   [breakout.entities :as entities]
+   ))
+
+;; (def init-state
+;;   {:angle 0
+;;    :bricks (get-level 3)
+;;    :ball {:x 0.5, :y 0.5, :vx 0, :vy 0, :slow false}
+;;    :pad 40
+;;    }
+;;   )
+
+;; (def game {:ball-size 2
+;;            :pad-size 20})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Setup game area and entities
+
+(def canvas-dom (.getElementById js/document "game"))
+(def game-canvas (canvas/init canvas-dom "2d"))
+
+;; Initial values for game entities
+(def pad (atom {:x (/ (.-width (:canvas game-canvas)) 2)
+                :y (- (.-height (:canvas game-canvas)) 20)}))
+
+(def ball (atom {:x (/ (.-width (:canvas game-canvas)) 3)
+                 :y (/ (.-height (:canvas game-canvas)) 3)
+                 :angle (* Math/PI 1.6)}))
+
+(def pad-entity (entities/pad-entity pad))
+(def ball-entity (entities/ball-entity game-canvas ball pad))
+

@@ -1,7 +1,6 @@
-;; Draw stuff to screen
+;; Old draw functions
 (ns breakout.draw
   (:require
-   [breakout.config :refer [window game]]
    [breakout.utils :refer [log]]
    [breakout.logic :as logic]
    ))

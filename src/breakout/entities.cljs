@@ -56,7 +56,7 @@
                        ;;(canvas/text {:text (str "y: " (:y val)) :x 2 :y 190})
                        ))))
 
-(def speed 100)
+(def speed 200)
 
 (defn calculate-x [angle]
   (* speed (/ (* (Math/cos angle)

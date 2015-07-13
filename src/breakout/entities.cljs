@@ -38,14 +38,14 @@
                          border-left 0]
                      ;;(println (str "x y" ball-x " " ball-y))
                      (cond
-                       (> ball-y border-bottom) nil
-                       (< ball-y border-top) nil ;; mirror-y
-                       (< ball-x border-left) (mirror-horizontal! ball)
-                       (> ball-x border-right) (mirror-horizontal! ball) ;; mirror-x
-                       :else (move-ball! ball)
+                       (> ball-y border-bottom) (mirror-horizontal! ball)
+                       (< ball-y border-top) (mirror-horizontal! ball)
+                       (< ball-x border-left) (mirror-vertical! ball)
+                       (> ball-x border-right) (mirror-vertical! ball)
+                       ;;:else 
                        )
                      )
-                   ;;(move-ball! ball)
+                   (move-ball! ball)
                    (-> value
                        (assoc :x (@ball :x))
                        (assoc :y (@ball :y))
@@ -54,9 +54,14 @@
                    (-> ctx
                        (canvas/fill-style "blue")
                        (canvas/fill-rect {:x (:x val) :y (:y val)
-                                          :w 3 :h 3})))))
+                                          :w 3 :h 3})
+                       
+                       ;;(canvas/text {:text (str "a: " (:angle val)) :x 2 :y 170})
+                       ;;(canvas/text {:text (str "x: " (:x val)) :x 2 :y 180})
+                       ;;(canvas/text {:text (str "y: " (:y val)) :x 2 :y 190})
+                       ))))
 
-(def speed 100)
+(def speed 200)
 (defn calculate-x [angle]
   (* speed (/ (* (Math/cos angle)
                  Math/PI)
@@ -67,7 +72,6 @@
               180)))
 
 (defn move-ball! [ball]
-  ;; TODO move function for ball
   (swap! ball (fn [xy]
                 (-> xy
                     (update-in [:x]
@@ -78,19 +82,14 @@
                                       (@ball :angle)))))))
   )
 
-;;TODO
+
+(defn mirror-vertical! [ball]
+  (let [angle (@ball :angle)]
+    (swap! ball assoc :angle (- angle (+ Math/PI (* 2 angle))))))
+
 (defn mirror-horizontal! [ball]
   (let [angle (@ball :angle)]
-    ;; (swap! ball (fn [ball]
-    ;;               (-> ball
-    ;;                   (update-in [:angle]
-    ;;                              #(+ % (calculate-x
-    ;;                                     (@ball :angle)))))))
-    (print angle)
-    )
-  )
-(defn mirror-vertical! [ball]
-  nil)
+    (swap! ball assoc :angle (- angle))))
 
 (defn move-right! [pad]
   "Move pad right."

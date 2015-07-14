@@ -31,7 +31,6 @@
           #(r/deliver out [::up (.-keyCode %)]))
     out))
 
-
 ;; Merge key events into single event stream that
 ;; reduces active keys into set and gets updated every 25 ms.
 
@@ -63,8 +62,16 @@
      (r/throttle 100) ;; simple debounce
      (r/map pause!))
 
+;;(filter-map #{UP} pad)
+(filter-map #{RIGHT} move-right! pad)
+(filter-map #{LEFT} move-left! pad)
+(filter-map #{SPACE} move-ball! ball)
+;;(filter-map #{PAUSE} pad)
+
+;;;; Pad control with mouse and orientation
+
 (defn mouse-move-stream []
-  (let [out (r/events [::x 50])
+  (let [out (r/events 100)
         game-canvas (.getElementById js/document "game")]
     (set! (.-onmousemove game-canvas)
           #(r/deliver out (.-clientX %)))
@@ -73,16 +80,18 @@
 (def mouse-position-stream
   (->> (mouse-move-stream)
        (r/uniq) ;; Drop duplicate events
-       (r/map #(do ;;(log (str "pad: " %))
-                 (move-to! pad %)
-                 ;;(swap! pad assoc :x %)
-                 ))
-       
-       ))
+       (r/map #(move-to! pad %))))
 
-;;(filter-map #{UP} pad)
-(filter-map #{RIGHT} move-right! pad)
-(filter-map #{LEFT} move-left! pad)
-(filter-map #{SPACE} move-ball! ball)
-;;(filter-map #{PAUSE} pad)
 
+(defn orientation-stream []
+  (let [out (r/events)]
+    (.addEventListener js/window "deviceorientation"
+                       #(r/deliver out %) false)
+     ;(.-alpha %)(.-beta %)(.-gamma %)
+    out))
+
+(def orientations-stream
+  (->> (orientation-stream)
+       ;;(r/uniq) ;; Drop duplicate events
+       (r/map #(.log js/console %))
+       )) 

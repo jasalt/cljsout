@@ -2,7 +2,6 @@
 (ns breakout.draw
   (:require
    [breakout.utils :refer [log]]
-   [breakout.logic :as logic]
    ))
 
 ;; (defn draw-ball [[x y]]

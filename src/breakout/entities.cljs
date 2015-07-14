@@ -109,7 +109,7 @@
   )
 
 (defn mirror-vertical! [ball]
-  "Handle vertical collision by changing ball angle."
+  "Handle vertical collision by changing ball angle. TODO fix"
   (let [angle (@ball :angle)]
     (swap! ball assoc :angle (- angle (+ Math/PI (* 2 angle))))))
 
@@ -117,3 +117,20 @@
   "Handle horizontal collision by changing ball angle."
   (let [angle (@ball :angle)]
     (swap! ball assoc :angle (- angle))))
+
+(defn make-brick-entity [canvas entity-key
+                         {pos-x :x pos-y :y}]
+  (canvas/entity {:x pos-x
+                  :y pos-y}
+                 (fn [value] ;; Update
+                   ;; TODO 
+                   value
+                   )
+                 (fn [ctx val] ;; Draw
+                   (-> ctx
+                       (canvas/stroke-style "black")
+                       (canvas/stroke-width 1)
+                       (canvas/stroke-rect {:x (:x val) :y (:y val)
+                                          :w 30 :h 10})
+                       
+                       ))))

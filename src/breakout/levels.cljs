@@ -47,6 +47,7 @@
              ) row)
           ) brick-vec)
        (apply concat) ;; Concatenate bricks from different rows.
+       (filter identity) ;; Remove nil bricks
        ))
 
 (defn get-level [num]

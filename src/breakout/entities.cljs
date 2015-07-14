@@ -20,7 +20,7 @@
                        (canvas/fill-rect {:x (:x val) :y (:y val)
                                           :w 50 :h 10})
                        (canvas/fill-style "gray")
-                       (canvas/text 
+                       (canvas/text
                         {:text (str "pad " (str-float (:x val))) :x 2 :y 50})
                        ))))
 
@@ -68,16 +68,12 @@
                        (canvas/fill-rect {:x (:x val) :y (:y val)
                                           :w 3 :h 3})
 
-                       ;;(canvas/text {:text
-                       ;;  (str "a: " (:angle val)) :x 2 :y 170})
                        (canvas/fill-style "gray")
-
-                       (canvas/text {:text "Ball" :x 2 :y 10})
-                       (canvas/text 
+                       (canvas/text
                         {:text (str "x " (str-float (:x val))) :x 2 :y 20})
-                       (canvas/text 
+                       (canvas/text
                         {:text (str "y " (str-float (:y val))) :x 2 :y 30})
-                       (canvas/text 
+                       (canvas/text
                         {:text (str "angle " (str-float (:angle val))) :x 2 :y 40})
                        ;;(canvas/text {:text
                        ;;  (str "y: " (:y val)) :x 2 :y 190})
@@ -123,7 +119,7 @@
   (canvas/entity {:x pos-x
                   :y pos-y}
                  (fn [value] ;; Update
-                   ;; TODO 
+                   ;; TODO
                    value
                    )
                  (fn [ctx val] ;; Draw
@@ -131,6 +127,10 @@
                        (canvas/stroke-style "black")
                        (canvas/stroke-width 1)
                        (canvas/stroke-rect {:x (:x val) :y (:y val)
-                                          :w 30 :h 10})
-                       
+                                            :w 30 :h 10})
+                       (canvas/font-style "8px Arial")
+                       ;; (canvas/text
+                       ;;  {:text (str (str-float (:x val) 0)" "
+                       ;;              (str-float (:y val) 0))
+                       ;;   :x (+ (:x val) 1) :y (+ (:y val) 8)})
                        ))))

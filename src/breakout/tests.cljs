@@ -5,21 +5,21 @@
   (:require [cemerick.cljs.test :as t]
             [breakout.core :as core]
             [breakout.levels :as levels]
-            [breakout.draw :as draw]
+            [breakout.utils :as utils]
             ))
 
 (deftest levels-get-level
-  (is (= (levels/get-level 1) [[true true true true true true true true]
-                               [true true true true true true true true]
-                               [nil  true true true true true true]])
+  (is (= (levels/parse-level-str (get levels/levels 0)) [[true true true true true true true true]
+                                     [true true true true true true true true]
+                                     [nil  true true true true true true]])
       "First level parses correctly")
-  (is (= (levels/get-level 2) [[nil  true true true true true true]
-                               [true true true true true true true true]
-                               [nil  nil  true true true true]])
+  (is (= (levels/parse-level-str (get levels/levels 1)) [[nil  true true true true true true]
+                                     [true true true true true true true true]
+                                     [nil  nil  true true true true]])
       "Second level parses correctly")
-  (is (= (levels/get-level 3) [[nil  true true true true true true]
-                               [true true true nil  nil  true true true]
-                               [nil  nil  true true true true]])
+  (is (= (levels/parse-level-str (get levels/levels 2)) [[nil  true true true true true true]
+                                     [true true true nil  nil  true true true]
+                                     [nil  nil  true true true true]])
       "Third level parses correctly"))
 
 ;; "TODO Proper output should be tested as well with handled side effects.."
@@ -38,3 +38,8 @@
 ;;       )
 ;;     )
 ;;   )
+
+(deftest scale-value
+  (is (= 0.0   (utils/scale-value 20.0 [20.0 30.0] [0 500])))
+  (is (= 500.0 (utils/scale-value 30.0 [20.0 30.0] [0 500])))
+  )

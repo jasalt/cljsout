@@ -18,7 +18,11 @@
                    (-> ctx
                        (canvas/fill-style "red")
                        (canvas/fill-rect {:x (:x val) :y (:y val)
-                                          :w 50 :h 10})))))
+                                          :w 50 :h 10})
+                       (canvas/fill-style "gray")
+                       (canvas/text 
+                        {:text (str "pad " (str-float (:x val))) :x 2 :y 50})
+                       ))))
 
 (defn move-right! [pad]
   "Move pad right."
@@ -66,8 +70,15 @@
 
                        ;;(canvas/text {:text
                        ;;  (str "a: " (:angle val)) :x 2 :y 170})
-                       (canvas/text {:text
-                                     (str-float (:x val)) :x 2 :y 180})
+                       (canvas/fill-style "gray")
+
+                       (canvas/text {:text "Ball" :x 2 :y 10})
+                       (canvas/text 
+                        {:text (str "x " (str-float (:x val))) :x 2 :y 20})
+                       (canvas/text 
+                        {:text (str "y " (str-float (:y val))) :x 2 :y 30})
+                       (canvas/text 
+                        {:text (str "angle " (str-float (:angle val))) :x 2 :y 40})
                        ;;(canvas/text {:text
                        ;;  (str "y: " (:y val)) :x 2 :y 190})
                        ))))

@@ -1,4 +1,6 @@
-(ns breakout.levels)
+(ns breakout.levels
+  (:require [breakout.utils :refer [log]])
+  )
 
 (def levels
   [;;1
@@ -18,7 +20,7 @@
   ----"
    ])
 
-(defn- parse-level [level-str]
+(defn- parse-level-str [level-str]
   (let [clean-str (rest level-str)]
     (loop [[c & rest] clean-str
            level []
@@ -31,9 +33,30 @@
           )
         (conj level (conj row true))))))
 
+(def brick-y-offset 25)
+(def brick-x-offset 35)
+
+(defn- parse-level [brick-vec]
+  "Transform brick-vec into vector of brick top-left bottom-right coordinates."
+  (->> (map-indexed
+        (fn [idy row]
+          (map-indexed
+           (fn [idx brick]
+             (when brick
+               [(* (inc idx) brick-x-offset) (* (+ 3 idy) brick-y-offset)])
+             ) row)
+          ) brick-vec)
+       (apply concat) ;; Concatenate bricks from different rows.
+       ))
+
 (defn get-level [num]
   "Return level by number."
   {:pre [(number? num)]}
-  (parse-level (nth levels (dec num))))
+  (-> (nth levels (dec num))
+      parse-level-str
+      parse-level)
+  )
 
 
+
+;;(print (get-level 1))

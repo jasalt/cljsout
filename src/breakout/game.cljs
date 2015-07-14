@@ -44,17 +44,17 @@
                                           entity-key
                                           {:x x :y y})]
     (canvas/add-entity game-canvas entity-key brick)
-    )
-  )
+    ))
 
-(defn build-level [level-number]
+(defn build-level []
   (let [bricks (get-level 1)]
-    (doseq [row bricks pos-y (range 3 6)]
-      (doseq [brick bricks pos-x (range 1 9)]
-        (add-brick! game-canvas (* 35 pos-x) (* 25 pos-y))
-        )
+    (doseq [[pos-x pos-y] bricks]
+      (add-brick! game-canvas pos-x pos-y)
       )
     )
   )
 
-(build-level 1)
+(build-level)
+
+;;;;(add-brick! game-canvas (* 35 pos-x) (* 25 pos-y))
+;;(build-level 1)

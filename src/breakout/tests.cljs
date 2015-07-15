@@ -40,6 +40,7 @@
 ;;   )
 
 (deftest scale-value
-  (is (= 0.0   (utils/scale-value 20.0 [20.0 30.0] [0 500])))
-  (is (= 500.0 (utils/scale-value 30.0 [20.0 30.0] [0 500])))
+  (is (= 0.0   (utils/scale-value 20.0 [20.0  30.0]  [0 500])))
+  (is (= 500.0 (utils/scale-value 30.0 [20.0  30.0]  [0 500])))
+  (is (= 175.0 (utils/scale-value 10.0 [-20.0 20.0]  [100 200])))
   )

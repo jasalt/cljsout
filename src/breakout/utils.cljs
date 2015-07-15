@@ -8,7 +8,7 @@
   (.log js/console (pprint msg))
   )
 
-(defn str-float 
+(defn str-float
   "Convert float to str rounded to n decimals (default 1)."
   ([x n] (gstring/format (str "%."n"f") x))
   ([x] (str-float x 1))
@@ -16,6 +16,11 @@
 
 (defn get-window-size []
   [(.-innerWidth js/window) (.-innerHeight js/window)])
+
+(defn scale-value [x [x-min x-max] [to-min to-max]]
+  "Scale given value thats between x-min and x-max to range to-min to-max."
+  (let [portion (/ (.abs js/Math (clojure (+ x x-min))) (- x-max x-min))]
+    (+ to-min (* portion (- to-max to-min)))))
 
 ;;TODO
 ;; (defn calc-bricks [bricks]

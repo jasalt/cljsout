@@ -6,6 +6,7 @@
    [breakout.game :refer [game-canvas ball pad]]
    [breakout.utils :refer [log]]
    [breakout.entities :refer [move-ball! move-left! move-right! move-to!]]
+   [breakout.utils :refer [scale-value str-float]]
    [breakout.hud :refer [hud-state]]
    ))
 
@@ -97,7 +98,10 @@
   (->> (orientation-stream)
        (r/uniq) ;; Drop duplicate events
        (r/map #(do
-                 (swap! hud-state assoc :accelerometer %)
-                 ;;(update-in % :gamma )
+                 (let [gamma (:gamma %)
+                       scaled-val (scale-value gamma [-30 30] [0 300])]
+                   (swap! hud-state assoc :accelerometer
+                          (map str-float [gamma scaled-val]))
+                   (move-to! pad scaled-val))
                  ))
        ))

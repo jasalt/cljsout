@@ -18,7 +18,8 @@
   [(.-innerWidth js/window) (.-innerHeight js/window)])
 
 (defn scale-value [x [x-min x-max] [to-min to-max]]
-  "Scale given value thats between x-min and x-max to range to-min to-max."
+  "Scale given value thats between x-min and x-max to range to-min to-max.
+   TODO bug-ridden"
   (let [portion (/ (.abs js/Math (- x x-min)) (- x-max x-min))] 
     (+ to-min (* portion (- to-max to-min)))))
 

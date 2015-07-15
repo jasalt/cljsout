@@ -19,7 +19,7 @@
 
 (defn scale-value [x [x-min x-max] [to-min to-max]]
   "Scale given value thats between x-min and x-max to range to-min to-max."
-  (let [portion (/ (.abs js/Math (clojure (+ x x-min))) (- x-max x-min))]
+  (let [portion (/ (.abs js/Math (- x x-min)) (- x-max x-min))] 
     (+ to-min (* portion (- to-max to-min)))))
 
 ;;TODO

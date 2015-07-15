@@ -9,6 +9,7 @@
      [breakout.utils :refer [log]]
      [breakout.entities :as entities]
      [breakout.input]
+     [breakout.hud]
      ))
 
 (enable-console-print!) ;; Route prints to console
@@ -22,3 +23,5 @@
   ;; your application
   ;; (swap! game-state update-in [:__figwheel_counter] inc)
   )
+
+

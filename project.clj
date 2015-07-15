@@ -6,9 +6,10 @@
   :dependencies [[org.clojure/clojure "1.7.0-RC2"]
                  [org.clojure/clojurescript "0.0-3255"]
                  [com.cemerick/clojurescript.test "0.3.3"]
-                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [rm-hull/monet "0.2.1"]
-                 [reagi "0.10.1"]]
+                 [reagi "0.10.1"]        ;; FRP library based on core.async
+                 [rm-hull/monet "0.2.1"] ;; Canvas library
+                 [reagent "0.5.0"]       ;; React.js
+                 ]
   :plugins [[lein-cljsbuild "1.0.5"]
             [lein-figwheel "0.3.5"]]
   :source-paths ["src"]
@@ -49,7 +50,7 @@
              ;; #! /bin/sh
              ;; emacsclient -n +$2 $1
              ;;
-             ;; :open-file-command "myfile-opener"
+             :open-file-command "myfile-opener"
 
              ;; if you want to disable the REPL
              ;; :repl false

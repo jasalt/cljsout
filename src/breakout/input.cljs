@@ -6,6 +6,7 @@
    [breakout.game :refer [game-canvas ball pad]]
    [breakout.utils :refer [log]]
    [breakout.entities :refer [move-ball! move-left! move-right! move-to!]]
+   [breakout.hud :refer [hud-state]]
    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -86,12 +87,17 @@
 (defn orientation-stream []
   (let [out (r/events)]
     (.addEventListener js/window "deviceorientation"
-                       #(r/deliver out %) false)
-     ;(.-alpha %)(.-beta %)(.-gamma %)
+                       #(r/deliver out {:alpha (.-alpha %)
+                                        ;;:beta  (.-beta %)
+                                        :gamma (.-gamma %)})
+                       false)
     out))
 
-(def orientations-stream
+(defonce orientations-stream
   (->> (orientation-stream)
-       ;;(r/uniq) ;; Drop duplicate events
-       (r/map #(.log js/console %))
-       )) 
+       (r/uniq) ;; Drop duplicate events
+       (r/map #(do
+                 (swap! hud-state assoc :accelerometer %)
+                 ;;(update-in % :gamma )
+                 ))
+       ))

@@ -1,0 +1,7 @@
+Minimalistic game powered by lispy functional reactive kool-aid.
+
+Development preview (15.7. commit 728c4e8):
+
+http://jasalt.github.io/games/cljsout-728c4e8/
+
+

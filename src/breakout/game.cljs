@@ -37,14 +37,15 @@
 (def pad-entity (entities/pad-entity pad))
 (def ball-entity (entities/ball-entity game-canvas ball pad))
 
-
 (defn add-brick! [canvas x y]
   (let [entity-key (gensym :brick)
         brick (entities/make-brick-entity canvas
                                           entity-key
                                           {:x x :y y})]
+    (derive entity-key ::brick) ;; TODO underive when removing?
     (canvas/add-entity game-canvas entity-key brick)
     ))
+
 
 (defn build-level []
   (let [bricks (get-level 1)]

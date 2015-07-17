@@ -28,10 +28,13 @@
 
 ;; Initial values for game entities
 (def pad (atom {:x (/ (.-width (:canvas game-canvas)) 2)
-                :y (- (.-height (:canvas game-canvas)) 20)}))
+                :y (- (.-height (:canvas game-canvas)) 20)
+                :w 50 :h 3
+                }))
 
 (def ball (atom {:x (/ (.-width (:canvas game-canvas)) 3)
                  :y (/ (.-height (:canvas game-canvas)) 3)
+                 :w 3 :h 3
                  :angle (* Math/PI 1.6)}))
 
 (def pad-entity (entities/pad-entity pad))

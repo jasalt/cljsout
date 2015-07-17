@@ -10,17 +10,14 @@
    ))
 
 (defn pad-entity [pad]
-  (canvas/entity {:x (@pad :x) :y (@pad :y)
-                  :w 50 :h 3}
+  (canvas/entity @pad
                  (fn [value] ;; Update
+                   ;; TODO get input state from sliding buffer on every draw?
                    (-> value
                        (assoc :x (@pad :x))
                        (assoc :y (@pad :y))))
                  (fn [ctx {:keys [x y w h]} val] ;; Draw
                    (-> ctx
-                       (canvas/fill-style "gray")
-                       ;; (canvas/fill-rect {:x (:x val) :y (:y val)
-                       ;;                    :w 50 :h 10})
                        (canvas/text
                         {:text (str "pad " (str-float x)) :x 2 :y 50})
 
@@ -28,20 +25,16 @@
 
                        (canvas/stroke-style "red")
                        (canvas/stroke-width h)
-
                        (canvas/translate x y)
                        (canvas/begin-path)
-                       
                        (canvas/move-to (- (/ w 2)) 0)
                        (canvas/line-to (/ w 2) 0)
-                       
                        (canvas/stroke)
+                       
                        canvas/restore))))
 
 (defn ball-entity [monet-canvas ball pad]
-  (canvas/entity {:x (@ball :x) :y (@ball :y)
-                  :w 3 :h 3
-                  :angle (@ball :angle)}
+  (canvas/entity @ball
                  (fn [value]
                    ;; Remove after out of view
                    (p/check-ball-collisions monet-canvas ball pad)

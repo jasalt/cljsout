@@ -19,7 +19,7 @@
 (canvas/draw-loop game-canvas)
 
 ;; Game is stopped when starting up to avoid unnecessary calculation.
-(canvas/stop-updating game-canvas)
+;;(canvas/stop-updating game-canvas)
 
 (defn on-js-reload []
   ;; optionally touch your game-state to force rerendering depending on

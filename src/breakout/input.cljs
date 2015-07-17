@@ -5,13 +5,14 @@
    [monet.canvas :as canvas]
    [breakout.game :refer [game-canvas canvas-dom ball pad]]
    [breakout.utils :refer [log]]
-   [breakout.entities :refer [move-ball! move-left! move-right! move-to!]]
+   [breakout.physics :refer [move-ball! move-left! move-right! move-to!]]
    [breakout.utils :refer [scale-value str-float]]
    [breakout.hud :refer [hud-state]]
    ))
 
 ;; Canvas x-offset will be subtracted from read mouse x values.
-(def mouse-x-offset (.ceil js/Math (.-left (.getBoundingClientRect canvas-dom))))
+(def mouse-x-offset
+  (.ceil js/Math (.-left (.getBoundingClientRect canvas-dom))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup controls
@@ -57,7 +58,7 @@
        (r/filter (partial some pred))
        (r/map (fn [_] (apply f args)))))
 
-(defn pause! [_]
+(defn pause! []
   (if @(:updating? game-canvas)
     (canvas/stop-updating game-canvas)
     (canvas/start-updating game-canvas)))
@@ -67,11 +68,9 @@
      (r/throttle 100) ;; simple debounce
      (r/map pause!))
 
-;;(filter-map #{UP} pad)
 (filter-map #{RIGHT} move-right! pad)
 (filter-map #{LEFT} move-left! pad)
 (filter-map #{SPACE} move-ball! ball)
-;;(filter-map #{PAUSE} pad)
 
 ;;;; Pad control with mouse and orientation
 
@@ -93,8 +92,7 @@
     (.addEventListener js/window "deviceorientation"
                        #(r/deliver out {:alpha (.-alpha %)
                                         ;;:beta  (.-beta %)
-                                        :gamma (.-gamma %)})
-                       false)
+                                        :gamma (.-gamma %)}) false)
     out))
 
 (defonce orientations-stream

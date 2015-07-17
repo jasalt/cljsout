@@ -17,6 +17,11 @@
 (defn get-window-size []
   [(.-innerWidth js/window) (.-innerHeight js/window)])
 
+(defn get-canvas-size []
+  (let [canvas (breakout.game/game-canvas :canvas)]
+    [(.-width canvas) (.-height canvas)]  
+    ))
+
 (defn scale-value [x [x-min x-max] [to-min to-max]]
   "Scale given value thats between x-min and x-max to range to-min to-max.
    TODO bug-ridden"

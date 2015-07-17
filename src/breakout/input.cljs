@@ -3,12 +3,15 @@
   (:require
    [reagi.core :as r]
    [monet.canvas :as canvas]
-   [breakout.game :refer [game-canvas ball pad]]
+   [breakout.game :refer [game-canvas canvas-dom ball pad]]
    [breakout.utils :refer [log]]
    [breakout.entities :refer [move-ball! move-left! move-right! move-to!]]
    [breakout.utils :refer [scale-value str-float]]
    [breakout.hud :refer [hud-state]]
    ))
+
+;; Canvas x-offset will be subtracted from read mouse x values.
+(def mouse-x-offset (.ceil js/Math (.-left (.getBoundingClientRect canvas-dom))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup controls
@@ -82,8 +85,8 @@
 (def mouse-position-stream
   (->> (mouse-move-stream)
        (r/uniq) ;; Drop duplicate events
-       (r/map #(move-to! pad %))))
-
+       (r/map #(move-to! pad (- % mouse-x-offset)))
+       ))
 
 (defn orientation-stream []
   (let [out (r/events)]

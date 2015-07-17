@@ -16,13 +16,23 @@
                        (assoc :y (@pad :y))))
                  (fn [ctx val] ;; Draw
                    (-> ctx
-                       (canvas/fill-style "red")
-                       (canvas/fill-rect {:x (:x val) :y (:y val)
-                                          :w 50 :h 10})
                        (canvas/fill-style "gray")
+                       ;; (canvas/fill-rect {:x (:x val) :y (:y val)
+                       ;;                    :w 50 :h 10})
                        (canvas/text
                         {:text (str "pad " (str-float (:x val))) :x 2 :y 50})
-                       ))))
+
+                       canvas/save
+                       
+                       (canvas/stroke-style "red")
+                       (canvas/stroke-width 3)
+                       
+                       (canvas/translate (:x val) (:y val))
+                       (canvas/begin-path)
+                       (canvas/move-to 0 0)
+                       (canvas/line-to 50 0)
+                       (canvas/stroke)
+                       canvas/restore))))
 
 (defn move-right! [pad]
   "Move pad right."

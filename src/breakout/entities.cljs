@@ -5,7 +5,22 @@
    [breakout.utils :refer [log str-float]]
    [clojure.string :as s]
    [monet.canvas :as canvas]
-   [monet.geometry :as geom]))
+   [monet.geometry :as geom]
+   ))
+
+(defn ball-collides? [ball-x ball-y rect-tl rect-br]
+  "Check if ball collides given rect defined by top-left and bottom-right.
+   Return collision position keyword (:right :top :bottom :left) or nil."
+  nil
+  )
+(defn check-ball-collisions [ball]
+  ;; Check walls
+  ;; Check pad
+  (keys (get  (js->clj (breakout.game/game-canvas :entities)) ":brick8"))
+  ;; Check bricks
+  ;; - Query bricks from game-canvas?
+  nil
+  )
 
 (defn pad-entity [pad]
   (canvas/entity {:x (@pad :x)
@@ -29,8 +44,8 @@
                        
                        (canvas/translate (:x val) (:y val))
                        (canvas/begin-path)
-                       (canvas/move-to 0 0)
-                       (canvas/line-to 50 0)
+                       (canvas/move-to -25 0)
+                       (canvas/line-to 25 0)
                        (canvas/stroke)
                        canvas/restore))))
 
@@ -134,11 +149,19 @@
                    )
                  (fn [ctx val] ;; Draw
                    (-> ctx
-                       (canvas/stroke-style "black")
-                       (canvas/stroke-width 1)
-                       (canvas/stroke-rect {:x (:x val) :y (:y val)
-                                            :w 30 :h 10})
-                       (canvas/font-style "8px Arial")
+                       canvas/save
+                       
+                       (canvas/stroke-style "green")
+                       (canvas/stroke-width 10)
+                       
+                       (canvas/translate (:x val) (:y val))
+                       (canvas/begin-path)
+                       (canvas/move-to 0 0)
+                       (canvas/line-to 30 0)
+                       (canvas/stroke)
+                       
+                       canvas/restore
+                       ;; (canvas/font-style "8px Arial")
                        ;; (canvas/text
                        ;;  {:text (str (str-float (:x val) 0)" "
                        ;;              (str-float (:y val) 0))

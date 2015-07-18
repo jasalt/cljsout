@@ -55,6 +55,17 @@
   (let [angle (@ball :angle)]
     (swap! ball assoc :angle (- angle))))
 
+;; TODO
+(defn nearest-side [obj1 {x2 :x y2 :y w2 :w h2 :h}]
+  "Check which side of second object is nearest to center of first object."
+  ;; Colliding object side points
+  (let [top    {:x (+ x2 (/ w2 2)) :y y2}
+        bottom {:x (+ x2 (/ w2 2)) :y (+ y2 w2)}
+        left   {:x x2              :y (+ y2 (/ w2 2))}
+        right  {:x (+ x2 w2)       :y (+ y2 (/ w2 2))}]
+    (map #(let [dist (geom/distance obj1 %)]
+            (assoc % :distance dist))
+         [top bottom left right])))
 
 (defn check-ball-collisions [monet-canvas ball pad]
   "Check if ball collides somewhere and change it's angle accordingly."
@@ -84,7 +95,9 @@
             colliding-brick (some #(if (geom/collision? @ball (second %)) %)
                                   bricks)]
         (when colliding-brick
-          (breakout.game/remove-brick! canvas (first colliding-brick)))
+          (breakout.game/remove-brick! canvas (first colliding-brick))
+          ;;(print (nearest-side @ball colliding-brick))
+          )
         )
       ;; check collision and calculate nearest side to decide.
       )

@@ -49,10 +49,7 @@
     (canvas/add-entity game-canvas entity-key brick)
     ))
 
-(defn remove-brick! [canvas brick-key]
-  (canvas/remove-entity canvas brick-key)
-  (underive brick-key ::breakout.game/brick)
-  )
+
 
 (defn build-level []
   (let [bricks (get-level 1)]
@@ -63,6 +60,15 @@
   )
 
 (build-level)
+
+(defn remove-brick! [canvas brick-key]
+  (canvas/remove-entity canvas brick-key)
+  (underive brick-key ::breakout.game/brick)
+
+  (when-not (descendants ::brick)
+    (build-level)
+    )
+  )
 
 ;;;;(add-brick! game-canvas (* 35 pos-x) (* 25 pos-y))
 ;;(build-level 1)

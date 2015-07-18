@@ -20,7 +20,7 @@
   "Move pad to given position."
   (swap! pad assoc :x pos))
 
-(def ball-speed 50) ;; TODO speed increase bug.
+(def ball-speed 100) ;; TODO speed increase bug.
 
 (defn calculate-x [angle]
   "Calculate movement vector y component."
@@ -83,14 +83,11 @@
                         brick-keys)
             colliding-brick (some #(if (geom/collision? @ball (second %)) %)
                                   bricks)]
-
         (when colliding-brick
-          (breakout.game/remove-brick! canvas (first colliding-brick))
-          )
+          (breakout.game/remove-brick! canvas (first colliding-brick)))
         )
       ;; check collision and calculate nearest side to decide.
       )
-
     )
   ;;(get  (breakout.game/game-canvas :entities) "::brick8")
   ;; Check bricks

@@ -1,9 +1,11 @@
 ;; View control logic for entities.
 (ns breakout.physics
-  (:require [breakout.utils :refer [get-canvas-size]]
-            [monet.geometry :as geom]
-            )
-
+  (:require
+   [breakout.utils :refer [get-canvas-size]]
+   ;;[breakout.game :as g] 
+   [monet.geometry :as geom]
+   [monet.canvas :as canvas]
+   )
   )
 
 (defn move-right! [pad]
@@ -71,26 +73,29 @@
 
       (geom/collision? @ball (update-in @pad [:x] #(- % (/ (@pad :w) 2))))
       (mirror-horizontal! ball) ;; TODO bounce properly on some direction
-      
+
       :else
-      (let [game-entities (breakout.game/game-canvas :entities)
+      (let [canvas breakout.game/game-canvas
+            game-entities (canvas :entities)
             brick-keys (descendants ::breakout.game/brick)
             ;; Access as js property for performance. TODO find a better way?
             bricks (map #(vector % ((aget game-entities (str %)) :value))
-                                brick-keys)
-            colliding-bricks (filter #(geom/collision? @ball (second %)) bricks)
-            ]
-        (when-not (empty? colliding-bricks) (print colliding-bricks))
+                        brick-keys)
+            colliding-brick (some #(if (geom/collision? @ball (second %)) %)
+                                  bricks)]
+
+        (when colliding-brick
+          (breakout.game/remove-brick! canvas (first colliding-brick))
+          )
         )
-      ;; map all bricks
       ;; check collision and calculate nearest side to decide.
       )
-    
+
     )
   ;;(get  (breakout.game/game-canvas :entities) "::brick8")
   ;; Check bricks
   ;;(let [brick-keywords (descendants ::breakout.game/brick)])
   ;; - Query bricks from game-canvas?
-  
+
 
   )

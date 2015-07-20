@@ -1,5 +1,11 @@
+@font-face {
+  font-family: 'Visitor';
+  src: url('../fonts/visitor1.ttf');
+}
+
 body {
     background-color: lightgray;
+    font-family: Visitor;
 }
 
 #game {

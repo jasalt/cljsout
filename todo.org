@@ -1,6 +1,5 @@
-* Draw pad
-* Use input for draw pos
-* Canvas Benchmark
+* Notes
+** Canvas Benchmark
 http://www.kevs3d.co.uk/dev/canvasmark/
 | Machine         | Browser      | Score | Notes                 |
 |-----------------+--------------+-------+-----------------------|
@@ -12,3 +11,35 @@ http://www.kevs3d.co.uk/dev/canvasmark/
 | Z1 CM12 Android | AOSP Browser |  3240 |                       |
 | iP 6 Plus       | Safari       |  4609 |                       |
 | Z2              | Opera        | ~4500 |                       |
+* Tasks
+** Startup screen
+*** TODO Cool font
+*** Hud system with reagent
+- startup notification
+- text notifications
+- points
+- level number
+** Brick collision
+*** DONE Check
+*** TODO Change angle
+*** Points
+** Paddle collision
+*** Set angle by collision point.
+** Change levels
+** Ball speedup
+** Bugs
+*** Angle mirroring
+Define ball angle by xy vectors?
+*** Weird speed increase
+** Performance improvement
+*** Accelerometer input
+Currently accelerometer input is lagging on mobile device.
+Thorttling event stream?
+** Graphics
+*** Ball movement
+Sliding queue for ball coordinates, draw it.
+*** Brick destroyed
+Some simple effect. Maybe on other canvas layer.
+** [#B] Advanced features
+*** Time manipulation
+Slowdown/reverse time...

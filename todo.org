@@ -12,9 +12,13 @@ http://www.kevs3d.co.uk/dev/canvasmark/
 | iP 6 Plus       | Safari       |  4609 |                       |
 | Z2              | Opera        | ~4500 |                       |
 * Tasks
-** Startup screen
-*** TODO Cool font
-*** Hud system with reagent
+** HUD
+*** Input chooser
+Reagent atom for switch-able configurations?
+*** Debug screen
+*** Startup screen
+**** TODO Cool font
+**** Hud system with reagent
 - startup notification
 - text notifications
 - points
@@ -31,15 +35,16 @@ http://www.kevs3d.co.uk/dev/canvasmark/
 *** Angle mirroring
 Define ball angle by xy vectors?
 *** Weird speed increase
-** Performance improvement
-*** Accelerometer input
-Currently accelerometer input is lagging on mobile device.
-Thorttling event stream?
-** Graphics
+** Graphic effects
+*** Styling
 *** Ball movement
 Sliding queue for ball coordinates, draw it.
 *** Brick destroyed
 Some simple effect. Maybe on other canvas layer.
+** Performance improvement
+*** Accelerometer input
+Currently accelerometer input is lagging on mobile device.
+Thorttling event stream?
 ** [#B] Advanced features
 *** Time manipulation
 Slowdown/reverse time...

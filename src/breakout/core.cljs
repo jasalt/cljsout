@@ -8,8 +8,10 @@
      [breakout.game :refer [game-canvas ball-entity pad-entity]]
      [breakout.utils :refer [log]]
      [breakout.entities :as entities]
-     [breakout.input]
-     [breakout.hud]
+     
+     ;;[breakout.input]
+     
+     
      ))
 
 (enable-console-print!) ;; Route prints to console
@@ -21,12 +23,15 @@
 ;; Game is stopped when starting up to avoid unnecessary calculation.
 ;;(canvas/stop-updating game-canvas)
 
+(defn pause! []
+  (if @(:updating? game-canvas)
+    (canvas/stop-updating game-canvas)
+    (canvas/start-updating game-canvas)))
+
 (defn on-js-reload []
   ;; optionally touch your game-state to force rerendering depending on
   ;; your application
   ;; (swap! game-state update-in [:__figwheel_counter] inc)
-  
-  
   )
 
 

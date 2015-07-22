@@ -1,14 +1,10 @@
 (ns breakout.input
-  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require
    [reagi.core :as r]
    [monet.canvas :as canvas]
-   [breakout.game :refer [game-canvas canvas-dom ball pad]]
-   [breakout.utils :refer [log]]
    [goog.events :as g-events]
-   ;;[breakout.physics :refer [move-ball! move-left! move-right! move-to!]]
-   [breakout.utils :refer [scale-value str-float]]
-   ;;[breakout.hud :refer [hud-state]]
+   [breakout.utils :refer [scale-value]]
+   [breakout.physics :refer [move-to! move-right! move-left!]]
    ))
 
 
@@ -21,32 +17,32 @@
 (def SPACE 32)
 (def PAUSE 80) ;; p
 
-;;;; Separate streams for keydowns and keyups
+;;;; TODO Separate streams for keydowns and keyups
 
-;; (defn keydown-stream []
-;;   (let [out (r/events)]
-;;     (set! (.-onkeydown js/document)
-;;           #(r/deliver out [::down (.-keyCode %)]))
-;;     out))
+(defn keydown-stream []
+  (let [out (r/events)]
+    (set! (.-onkeydown js/document)
+          #(r/deliver out [::down (.-keyCode %)]))
+    out))
 
-;; (defn keyup-stream []
-;;   (let [out (r/events)]
-;;     (set! (.-onkeyup js/document)
-;;           #(r/deliver out [::up (.-keyCode %)]))
-;;     out))
+(defn keyup-stream []
+  (let [out (r/events)]
+    (set! (.-onkeyup js/document)
+          #(r/deliver out [::up (.-keyCode %)]))
+    out))
 
-;; Merge key events into single event stream that
-;; reduces active keys into set and gets updated every 25 ms.
+;;Merge key events into single event stream that
+;;reduces active keys into set and gets updated every 25 ms.
 
-;; (def active-keys-stream
-;;   (->> (r/merge (keydown-stream) (keyup-stream))
-;;        (r/reduce (fn [acc [event-type key-code]]
-;;                    (condp = event-type
-;;                      ::down (conj acc key-code)
-;;                      ::up (disj acc key-code)
-;;                      acc))
-;;                  #{})
-;;        (r/sample 25)))
+(def active-keys-stream
+  (->> (r/merge (keydown-stream) (keyup-stream))
+       (r/reduce (fn [acc [event-type key-code]]
+                   (condp = event-type
+                     ::down (conj acc key-code)
+                     ::up (disj acc key-code)
+                     acc))
+                 #{})
+       (r/sample 25)))
 
 ;; (defn filter-map [pred f & args]
 ;;   "Helper function for responding to active keys with actions.
@@ -56,27 +52,24 @@
 ;;        (r/filter (partial some pred))
 ;;        (r/map (fn [_] (apply f args)))))
 
-(defn pause! []
-  (if @(:updating? game-canvas)
-    (canvas/stop-updating game-canvas)
-    (canvas/start-updating game-canvas)))
-
-;; (->> active-keys-stream
-;;      (r/filter (partial some #{PAUSE}))
-;;      (r/throttle 100) ;; simple debounce
-;;      (r/map pause!))
+(->> active-keys-stream
+     (r/filter (partial some #{PAUSE SPACE}))
+     (r/throttle 100) ;; simple debounce
+     (r/map #(breakout.core/pause!))
+     )
 
 ;;(filter-map #{RIGHT} move-right! pad)
 ;;(filter-map #{LEFT} move-left! pad)
 ;;(filter-map #{SPACE} move-ball! ball)
 
-;;;; Pad control with mouse and orientation
+
+;;;; Mouse position
 
 (defonce mouse-move-stream (r/events 100))
 
 (defn start-mouse-listener []
- (let [game-canvas (.getElementById js/document "game")]
-   (set! (.-onmousemove game-canvas) #(r/deliver mouse-move-stream (.-clientX %)))))
+  (let [game-canvas (.getElementById js/document "game")]
+    (set! (.-onmousemove game-canvas) #(r/deliver mouse-move-stream (.-clientX %)))))
 
 (defn stop-mouse-listener []
   (let [game-canvas (.getElementById js/document "game")]
@@ -85,37 +78,62 @@
 
 (start-mouse-listener)
 
+;; Canvas x-offset will be subtracted from read mouse x values.
+(def mouse-x-offset
+  (- (.ceil js/Math (.-left (.getBoundingClientRect
+                             (.getElementById js/document "game")))) 1))
+
 (def mouse-position-stream
   (->> mouse-move-stream
        (r/uniq) ;; Drop duplicate events
-       
+       (r/map #(- % mouse-x-offset))
        ))
 
-(defonce orientation-source (r/events))
-(defn set-orientation-listener []
+
+;;;;;;;; Device Orientation
+
+;; Capture deviceorientation event gamma values
+(defonce orientation-change-stream (r/events 100))
+
+(defn read-orientation-event [e]
+  "Need to use named function to allow removing event listener."
+  (r/deliver orientation-change-stream {:gamma (.-gamma e)
+                                        :alpha (.-alpha e)
+                                        :beta (.-beta e)
+                                        }))
+(defn start-orientation-listener []
   (.addEventListener js/window "deviceorientation"
-                     #(r/deliver orientation-source
-                                 {:alpha (.-alpha %)
-                                  ;;:beta  (.-beta %)
-                                  :gamma (.-gamma %)}) false))
-(set-orientation-listener)
+                     read-orientation-event false))
 
-(defn orientation-stream []
-  ;; Normalize orientation stream values
-  (let [chan (r/events)]
-    (->> ;;(r/subscribe chan orientation-source)
-     orientation-source
-     (r/uniq) ;; Drop duplicate events
-     (r/map #(do
-               (let [gamma (:gamma %)
-                     scaled-val (scale-value gamma [-30 30] [0 300])]
-                 scaled-val
+(defn stop-orientation-listener []
+  (.removeEventListener js/window
+                        "deviceorientation"
+                        read-orientation-event false))
 
-                 ;; (move-to! pad scaled-val)
-                 )
-               ))
-     )
-    chan
-    ))
+(start-orientation-listener)
 
+;; Cleanup and normalize orientation changes
+;; TODO calibrate/optimize for different devices
+;; -30 - 30 android phone
+;; -15 - 15 macbook pro 2011
+(defonce orientation-stream
+  (->> orientation-change-stream
+       (r/map :gamma)
+       (r/uniq)
+       (r/map #(hash-map :scaled (->> (scale-value % [-30 30] [0 300])
+                                      (.floor js/Math)) :unscaled %))
+       ))
 
+;; Aggregate pad positions from streams that provide them
+(defonce pad-position-stream
+  (->> (r/merge mouse-position-stream
+                (->> orientation-stream (r/map :scaled)))
+       ;;(r/map print) ;;reduce
+       ;;(r/map #(do (print %) %))
+       ;;(r/sample 500)
+       ;;(r/map #(reset! hud-state %))
+       ;;(r/map print)
+
+       (r/map #(move-to! breakout.game/pad %))
+       )
+  )

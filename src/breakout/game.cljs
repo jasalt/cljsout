@@ -7,6 +7,8 @@
    [breakout.utils :refer [log]]
    [breakout.entities :as entities]
    [breakout.levels :refer [get-level]]
+   [breakout.hud]
+   ;;[breakout.physics]
    ))
 
 ;; (def init-state

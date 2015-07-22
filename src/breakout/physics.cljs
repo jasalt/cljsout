@@ -2,10 +2,8 @@
 (ns breakout.physics
   (:require
    [reagi.core :as r]
-   [monet.geometry :as geom]
    [monet.canvas :as canvas]
-   [breakout.utils :refer [get-canvas-size]]
-   ;;[breakout.input :as input] 
+   [monet.geometry :as geom]
    )
   )
 
@@ -20,25 +18,6 @@
 (defn move-to! [pad pos]
   "Move pad to given position."
   (swap! pad assoc :x pos))
-
-;; Canvas x-offset will be subtracted from read mouse x values.
-(def mouse-x-offset
-  (.ceil js/Math (.-left (.getBoundingClientRect
-                          breakout.game/canvas-dom))))
-
-(def pad-position-stream
-  ;; Handle pad updates from different input streams.
-  ;; Gets normalized values
-  ;;(->> (r/merge (breakout.input/)))
-  (->> breakout.input/mouse-position-stream
-    
-    ;;(r/subscribe chan breakout.input/orientation-stream)
-    ;;(r/map print)
-       (r/map #(breakout.physics/move-to!
-                
-                breakout.game/pad (- % mouse-x-offset)))
-    )
-  )
 
 (def ball-speed 100) ;; TODO speed increase bug.
 

@@ -2,7 +2,8 @@
   (:require
    [reagent.core :as r]))
 
-(def default-inputs [:mouse])
+(def default-inputs [;;:mouse
+                     ])
 
 (def initial-config
   {:input {:mouse

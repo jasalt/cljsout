@@ -3,7 +3,7 @@
    [reagi.core :as r]
    [monet.canvas :as canvas]
    [goog.events :as g-events]
-   [breakout.utils :refer [scale-value]]
+   [breakout.utils :refer [scale-value str-float]]
    [breakout.physics :refer [move-to! move-right! move-left!]]
    ))
 
@@ -114,22 +114,23 @@
 
 ;; Cleanup and normalize orientation changes
 ;; TODO calibrate/optimize for different devices
-;; -30 - 30 android phone
+;; -30 - 30 android phone 
 ;; -15 - 15 macbook pro 2011
 (defonce orientation-stream
   (->> orientation-change-stream
        (r/map :gamma)
        (r/uniq)
        (r/map #(hash-map :scaled (->> (scale-value % [-30 30] [0 300])
-                                      (.floor js/Math)) :unscaled %))
+                                      (.floor js/Math)) :unscaled (str-float % 2)
+                                      ))
        ))
 
 ;; Aggregate pad positions from streams that provide them
 (defonce pad-position-stream
   (->> (r/merge mouse-position-stream
                 (->> orientation-stream (r/map :scaled)))
-       ;;(r/map print) ;;reduce
-       ;;(r/map #(do (print %) %))
+        
+       ;;(r/map #(do (print (str "pad to " %)) %))
        ;;(r/sample 500)
        ;;(r/map #(reset! hud-state %))
        ;;(r/map print)
@@ -137,3 +138,6 @@
        (r/map #(move-to! breakout.game/pad %))
        )
   )
+
+
+

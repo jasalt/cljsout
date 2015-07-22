@@ -26,18 +26,21 @@
 
 (defn accelerometer-view []
   [:div
-
-   [:p "Mouse " (:mouse @hud-state)]
-   (let [mouse-state (-> @config :input :mouse :active)]
-     [:input {:type "checkbox" :checked mouse-state
-              :on-change #(set-input :mouse (not mouse-state))}])
-
-   [:p "Orientation raw " (:unscaled (:orientation @hud-state))]
-   [:p "Orientation scaled " (:scaled (:orientation @hud-state))]
-
-   (let [orientation-state (-> @config :input :orientation :active)]
-     [:input {:type "checkbox" :checked orientation-state
-              :on-change #(set-input :orientation (not orientation-state))}])])
+   [:h3 "Debug"]
+   [:p (let [mouse-state (-> @config :input :mouse :active)]
+         [:input {:type "checkbox" :checked mouse-state
+                  :on-change #(set-input :mouse (not mouse-state))}])
+    " Mouse " (:mouse @hud-state)]
+   
+   [:p (let [orientation-state (-> @config :input :orientation :active)]
+         [:input {:type "checkbox" :checked orientation-state
+                  :on-change #(set-input :orientation (not orientation-state))}])
+    " Orientation"
+    [:p "Raw " (:unscaled (:orientation @hud-state))]
+    [:p "Scaled " (:scaled (:orientation @hud-state))]
+    ]
+   
+   ])
 
 (dom/render-component
  [accelerometer-view]

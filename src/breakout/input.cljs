@@ -68,15 +68,15 @@
 (defonce mouse-move-stream (r/events 100))
 
 (defn start-mouse-listener []
+  (println "Starting mouse listener")
   (let [game-canvas (.getElementById js/document "game")]
     (set! (.-onmousemove game-canvas) #(r/deliver mouse-move-stream (.-clientX %)))))
 
 (defn stop-mouse-listener []
+  (println "Stopping mouse listener")
   (let [game-canvas (.getElementById js/document "game")]
     ;;(.removeEventListener game-canvas put-to-mouse-stream)
     (set! (.-onmousemove game-canvas) nil)))
-
-(start-mouse-listener)
 
 ;; Canvas x-offset will be subtracted from read mouse x values.
 (def mouse-x-offset
@@ -102,15 +102,15 @@
                                         :beta (.-beta e)
                                         }))
 (defn start-orientation-listener []
+  (println "Starting orientation listener")
   (.addEventListener js/window "deviceorientation"
                      read-orientation-event false))
 
 (defn stop-orientation-listener []
+  (println "Stopping orientation listener")
   (.removeEventListener js/window
                         "deviceorientation"
                         read-orientation-event false))
-
-(start-orientation-listener)
 
 ;; Cleanup and normalize orientation changes
 ;; TODO calibrate/optimize for different devices

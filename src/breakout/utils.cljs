@@ -10,7 +10,8 @@
 
 (defn str-float
   "Convert float to str rounded to n decimals (default 1)."
-  ([x n] (gstring/format (str "%."n"f") x))
+  ([x n]
+   (if x (gstring/format (str "%."n"f") x)))
   ([x] (str-float x 1))
   )
 

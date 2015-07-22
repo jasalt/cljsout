@@ -1,7 +1,16 @@
-Minimalistic game powered by lispy functional reactive kool-aid.
+* Clojurescript breakout clone
+Ongoing learning project on #{functional reactive game} programming.
 
-Development preview (15.7. commit 728c4e8):
+Input from mouse, keyboard and device accelerometer is handled with event streams provided by reagi/coreasync. Game is drawn on 2D canvas with monet library. HUD is drawn on DOM with reagent/react.js.
 
+License: GPLv3
+
+* Running
+1) Clone repo and navigate to project folder
+2) run `lein figwheel dev`
+3) Open http://localhost:3449 after jvm has warmed up.
+
+* Live development previews
+** (15.7. commit 728c4e8)
 http://jasalt.github.io/games/cljsout-728c4e8/
-
 

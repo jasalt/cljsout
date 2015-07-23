@@ -11,6 +11,12 @@ License: GPLv3
 3) Open http://localhost:3449 after jvm has warmed up.
 
 * Live development previews
+** (23.7. commit 42228e3)
+http://jasalt.github.io/games/cljsout-2-42228e3/
+- More collisions
+- Switch inputs
+- More sane code ...
 ** (15.7. commit 728c4e8)
 http://jasalt.github.io/games/cljsout-728c4e8/
-
+- Stuff moving on the screen
+  

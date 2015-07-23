@@ -8,7 +8,7 @@
    
    [breakout.utils :refer [log str-float get-canvas-size]]
    [breakout.physics :as p]
-   [breakout.hud :refer [hud-update-stream]]
+   [breakout.hud :refer [tell-hud]]
    ))
 
 (defn pad-entity [pad]
@@ -18,7 +18,7 @@
                    (let [new-state (-> value
                                        (assoc :x (@pad :x))
                                        (assoc :y (@pad :y)))]
-                     (r/deliver hud-update-stream {:pad (new-state :x)})
+                     (tell-hud {:pad (new-state :x)})
                      new-state))
                  (fn [ctx {:keys [x y w h]} val] ;; Draw
                    (-> ctx
@@ -40,22 +40,28 @@
                    ;; Remove after out of view
                    (p/check-ball-collisions monet-canvas ball pad)
                    (p/move-ball! ball)
-                   (-> value
-                       (assoc :x (@ball :x))
-                       (assoc :y (@ball :y))
-                       (assoc :angle (@ball :angle))))
-                 (fn [ctx {:keys [x y w h angle] :as v} val]
+                   (let [new-state (-> value
+                             (assoc :x (@ball :x))
+                             (assoc :y (@ball :y))
+                             (assoc :angle (@ball :angle)))]
+                     (tell-hud {:ball {:x (str-float (new-state :x))
+                                       :y (str-float (new-state :y))
+                                       :a (str-float (new-state :angle))}})
+                     new-state
+                     )
+                   )
+                 (fn [ctx v]
                    (-> ctx
                        (canvas/fill-style "blue")
                        (canvas/fill-rect (dissoc v :angle))
                        
-                       (canvas/fill-style "gray")
-                       (canvas/text
-                        {:text (str "x " (str-float x)) :x 2 :y 20})
-                       (canvas/text
-                        {:text (str "y " (str-float y)) :x 2 :y 30})
-                       (canvas/text
-                        {:text (str "angle " (str-float angle)) :x 2 :y 40})
+                       ;; (canvas/fill-style "gray")
+                       ;; (canvas/text
+                       ;;  {:text (str "x " (str-float x)) :x 2 :y 20})
+                       ;; (canvas/text
+                       ;;  {:text (str "y " (str-float y)) :x 2 :y 30})
+                       ;; (canvas/text
+                       ;;  {:text (str "angle " (str-float angle)) :x 2 :y 40})
                        ;;(canvas/text {:text
                        ;;  (str "y: " (:y val)) :x 2 :y 190})
                        ))))

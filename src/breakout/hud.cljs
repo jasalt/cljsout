@@ -43,6 +43,8 @@
    
    [:h2 "Entities"]
    [:p "Pad X " (str (:pad @hud-state))]
+   (let [{:keys [x y a]} (:ball @hud-state)]
+    [:p "Ball " (str "X " x " Y " y " Angle " a)])
    [:p "Brick count " (str (:bricks @hud-state))]
    [:p "Last " (str (:last-brick @hud-state))]
    ])

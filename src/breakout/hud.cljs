@@ -23,8 +23,7 @@
          (r/reduce (fn [coll event] (merge coll event)))
          (r/sample 50)
          (r/map #(reset! hud-state %)))
-    in-stream
-    ))
+    in-stream))
 
 (defn accelerometer-view []
   [:div
@@ -33,18 +32,24 @@
    [:p (let [mouse-state (-> @config :input :mouse :active)]
          [:input {:type "checkbox" :checked mouse-state
                   :on-change #(set-input :mouse (not mouse-state))}])
-    " Mouse " (:mouse @hud-state)]
-   
+    " Mouse X " (:mouse @hud-state)]
+
    [:p (let [orientation-state (-> @config :input :orientation :active)]
          [:input {:type "checkbox" :checked orientation-state
                   :on-change #(set-input :orientation (not orientation-state))}])
-    " Orientation"
-    [:p "Raw " (:unscaled (:orientation @hud-state))]
-    [:p "Scaled " (:scaled (:orientation @hud-state))]
-    ]
+    " Orientation "
+    (when-let [x-val (:orientation @hud-state)]
+      (str "X " (:scaled x-val) " Raw " (:unscaled (:orientation @hud-state))))]
+   
    [:h2 "Entities"]
-   [:p "Pad " (str (:pad @hud-state))]
+   [:p "Pad X " (str (:pad @hud-state))]
+   [:p "Brick count " (str (:bricks @hud-state))]
+   [:p "Last " (str (:last-brick @hud-state))]
    ])
+
+(defn tell-hud [msg]
+  "Tell hud about some event."
+  (r/deliver hud-update-stream msg))
 
 (dom/render-component
  [accelerometer-view]

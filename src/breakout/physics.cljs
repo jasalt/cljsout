@@ -1,11 +1,8 @@
 ;; View control logic for entities.
 (ns breakout.physics
   (:require
-   [reagi.core :as r]
    [monet.canvas :as canvas]
-   [monet.geometry :as geom]
-   )
-  )
+   [monet.geometry :as geom]))
 
 (defn move-right! [pad]
   "Move pad right."
@@ -84,7 +81,7 @@
       (geom/collision? @ball (update-in @pad [:x] #(- % (/ (@pad :w) 2))))
       (mirror-horizontal! ball) ;; TODO bounce properly on some direction
 
-      :else
+      :else ;; Check bricks
       (let [canvas breakout.game/game-canvas
             game-entities (canvas :entities)
             brick-keys (descendants ::breakout.game/brick)
@@ -95,16 +92,10 @@
                                   bricks)]
         (when colliding-brick
           (breakout.game/remove-brick! canvas (first colliding-brick))
+          (breakout.hud/tell-hud {:bricks (- (count bricks) 1)
+                                  :last-brick colliding-brick})
           ;;(print (nearest-side @ball colliding-brick))
+          ;;TODO calculate nearest side and mirror ball angle accordingly
           )
         )
-      ;; check collision and calculate nearest side to decide.
-      )
-    )
-  ;;(get  (breakout.game/game-canvas :entities) "::brick8")
-  ;; Check bricks
-  ;;(let [brick-keywords (descendants ::breakout.game/brick)])
-  ;; - Query bricks from game-canvas?
-
-
-  )
+      )))

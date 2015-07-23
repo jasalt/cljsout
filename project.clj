@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.7.0-RC2"]
                  [org.clojure/clojurescript "0.0-3255"]
                  [com.cemerick/clojurescript.test "0.3.3"]
-                 [reagi "0.10.1"]        ;; FRP library based on core.async
+                 [reagi "0.10.1"         ;; FRP library based on core.async
+                  :exclusions [org.clojure/clojure]]
                  [rm-hull/monet "0.2.1"] ;; Canvas library
                  [reagent "0.5.0"]       ;; React.js
                  ]

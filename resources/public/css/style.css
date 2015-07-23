@@ -22,9 +22,13 @@ body {
 /* TODO relative positioning over game canvas */
 #gameOverlay {
     margin-left: 10px;
-    margin-top: -30px;
+    margin-top: -20px;
     position: absolute;
     z-index:2;
+}
+
+#gameOverlayText {
+    
 }
 
 #hudContainer {

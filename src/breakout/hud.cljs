@@ -62,7 +62,7 @@
  (.getElementById js/document "hud"))
 
 
-(def overlay-text (dom/atom "Initial"))
+(defonce overlay-text (dom/atom "It's"))
 
 (defn game-overlay []
   [:h1 @overlay-text]
@@ -73,33 +73,35 @@
  (.getElementById js/document "gameOverlayText")
  )
 
-;; (doseq [char "Breakout"])
-(def game-name "BREAKOUT")
-(defn get-variation [title]
-  )
+
 
 (defn set-text [text]
   (reset! overlay-text text))
 
-(go
-  (loop [[matched unmatched] [[] (vec game-name)]]
-    (<! (timeout 30))
-    (when-not (empty? unmatched)
-      (let [random-part (repeatedly (count unmatched) rand-char)]
-        (set-text (apply str (concat matched random-part)))
-        (if (or (= (rand-int 3) 1)
-                (= (first random-part) (first unmatched)))
-          (recur [(conj matched (first unmatched)) ;; If match
-                  (rest unmatched)])
-          (recur [matched ;; Else
-                  unmatched])))))
-  (set-text game-name)
-  
-  ;; (<! (timeout 1000))
-  ;; (reset! overlay-text "Coming...")
-  ;; (<! (timeout 1000))
-  ;; (reset! overlay-text game-name)
-  )
-
-
-;; (swap! @overlay-text)
+(defn startup-title-animation []
+  "Run fancy startup title animation."
+  (let [game-name "BREAKOUT"]
+    (go
+      (loop [[matched unmatched] [[] (vec game-name)]]
+        (<! (timeout 30))
+        (when-not (empty? unmatched)
+          (let [random-part (repeatedly (count unmatched) rand-char)]
+            (set-text (apply str (concat matched random-part)))
+            (if (or (= (rand-int 3) 1)
+                    (= (first random-part) (first unmatched)))
+              (recur [(conj matched (first unmatched)) ;; If match
+                      (rest unmatched)])
+              (recur [matched ;; Else
+                      unmatched])))))
+      (set-text game-name)
+      (doseq [i (range 2)]
+        (<! (timeout 200))
+        (set-text nil)
+        (<! (timeout 200))
+        (set-text game-name)
+        )
+      (<! (timeout 400))
+      (set-text "TIME!")
+      (<! (timeout 600))
+      (set-text nil)
+      )))

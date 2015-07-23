@@ -2,7 +2,7 @@
   (:require
    [reagent.core :as r]))
 
-(def default-inputs [;;:mouse
+(def default-inputs [:mouse
                      ])
 
 (def initial-config
@@ -22,7 +22,7 @@
                            ))}}
    :game {:running true}})
 
-(def config (r/atom initial-config))
+(defonce config (r/atom initial-config))
 
 ;; Control game config from dom
 
@@ -37,5 +37,12 @@
     (set-config new-state :input input-type :active)
     (toggle-fn new-state)))
 
-(doseq [input default-inputs]
-  (set-input input true))
+(defn set-initial-inputs! []
+  (doseq [input default-inputs]
+    (if-not (-> @config :input input :active)
+      (set-input input true)
+      (print (str input" already active, skipping"))))) 
+
+;; Hacky function call for setting initial inputs
+(set! (.-onload js/window) (js/setTimeout set-initial-inputs! 1000))
+

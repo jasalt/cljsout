@@ -1,7 +1,11 @@
 (ns breakout.utils
   (:require [cljs.pprint :refer [pprint]]
             [goog.string :as gstring]
-            [goog.string.format])
+            [goog.string.format]
+            [cljs.core.async :refer [chan close!]]
+            )
+  (:require-macros
+   [cljs.core.async.macros :as m :refer [go]])
   )
 
 (defn log [msg]
@@ -29,13 +33,8 @@
   (let [portion (/ (.abs js/Math (- x x-min)) (- x-max x-min))] 
     (+ to-min (* portion (- to-max to-min)))))
 
-;;TODO
-;; (defn calc-bricks [bricks]
-;;   "Return vector of all brick (top-left corner) locations."
-;;   (let [level [[true true true true true true]
-;;                [true true true nil nil true true true]
-;;                [nil nil true true true]]]
-;;     (loop [row level x-offset 0]
-;;       )
-;;     )
-;;   )
+(defn timeout [ms]
+  (let [c (chan)]
+    (js/setTimeout (fn [] (close! c)) ms)
+    c))
+

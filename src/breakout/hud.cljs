@@ -13,20 +13,24 @@
    {:accelerometer "[Waiting for input values]"}))
 
 ;; UI atom gets updated by stream that is thorttled.
-(defonce ui-update-stream
-  (let [merged-stream (r/events)
+(defonce hud-update-stream
+  (let [in-stream (r/events) ;; Entity values are delivered to this stream
         mouse-stream (->> input/mouse-position-stream
                           (r/map #(hash-map :mouse %)))
         orientation-stream (->> input/orientation-stream
                                 (r/map #(hash-map :orientation %)))]
-    (->> (r/merge mouse-stream orientation-stream)
-         (r/reduce (fn [coll event] (merge coll event)) {:orientation 0 :mouse 0})
-         (r/sample 100)
-         (r/map #(reset! hud-state %)))))
+    (->> (r/merge mouse-stream orientation-stream in-stream)
+         ;;TODO zip merge-with merge
+         (r/reduce (fn [coll event] (merge coll event)) {:orientation 0 :mouse 0 :pad 0})
+         (r/sample 50)
+         (r/map #(reset! hud-state %)))
+    in-stream
+    ))
 
 (defn accelerometer-view []
   [:div
-   [:h3 "Debug"]
+   [:h2 "Debug"]
+   [:h3 "Input"]
    [:p (let [mouse-state (-> @config :input :mouse :active)]
          [:input {:type "checkbox" :checked mouse-state
                   :on-change #(set-input :mouse (not mouse-state))}])
@@ -39,7 +43,8 @@
     [:p "Raw " (:unscaled (:orientation @hud-state))]
     [:p "Scaled " (:scaled (:orientation @hud-state))]
     ]
-   
+   [:h2 "Entities"]
+   [:p "Pad " (str (:pad @hud-state))]
    ])
 
 (dom/render-component

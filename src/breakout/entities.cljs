@@ -2,25 +2,26 @@
 ;; Set initial data and update & draw fn's.
 (ns breakout.entities
   (:require
+   [monet.canvas :as canvas]
+   [clojure.string :as s]
+   [reagi.core :as r]
+   
    [breakout.utils :refer [log str-float get-canvas-size]]
    [breakout.physics :as p]
-
-   [clojure.string :as s]
-   [monet.canvas :as canvas]
+   [breakout.hud :refer [hud-update-stream]]
    ))
 
 (defn pad-entity [pad]
   (canvas/entity @pad
                  (fn [value] ;; Update
                    ;; TODO get input state from sliding buffer on every draw?
-                   (-> value
-                       (assoc :x (@pad :x))
-                       (assoc :y (@pad :y))))
+                   (let [new-state (-> value
+                                       (assoc :x (@pad :x))
+                                       (assoc :y (@pad :y)))]
+                     (r/deliver hud-update-stream {:pad (new-state :x)})
+                     new-state))
                  (fn [ctx {:keys [x y w h]} val] ;; Draw
                    (-> ctx
-                       (canvas/text
-                        {:text (str "pad " (str-float x)) :x 2 :y 50})
-
                        canvas/save
 
                        (canvas/stroke-style "red")

@@ -51,8 +51,6 @@
     (canvas/add-entity game-canvas entity-key brick)
     ))
 
-
-
 (defn build-level []
   (let [bricks (get-level 1)]
     (doseq [[pos-x pos-y] bricks]

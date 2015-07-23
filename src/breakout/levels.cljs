@@ -33,7 +33,7 @@
           )
         (conj level (conj row true))))))
 
-(def brick-y-offset 25)
+(def brick-y-offset 35)
 (def brick-x-offset 35)
 
 (defn- parse-level [brick-vec]

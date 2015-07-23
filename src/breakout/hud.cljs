@@ -74,7 +74,7 @@
  )
 
 ;; (doseq [char "Breakout"])
-(def game-name "Breakout")
+(def game-name "BREAKOUT")
 (defn get-variation [title]
   )
 
@@ -82,11 +82,16 @@
   (reset! overlay-text text))
 
 (go
-  (loop [current "asdffdsa"]
-    (<! (timeout 100))
-    (set-text (apply str (repeatedly 8 rand-char)) )
-    (recur "asd")
-    )
+  (loop [[matched unmatched] [[] (vec game-name)]]
+    (<! (timeout 10))
+    (when-not (empty? unmatched)
+      (let [random-part (repeatedly (count unmatched) rand-char)]
+        (set-text (apply str (concat matched random-part)))
+        (if (= (first random-part) (first unmatched))
+          (recur [(conj matched (first unmatched)) ;; If match
+                  (rest unmatched)])
+          (recur [matched ;; Else
+                  unmatched])))))
   
   ;; (<! (timeout 1000))
   ;; (reset! overlay-text "Coming...")

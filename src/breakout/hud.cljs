@@ -20,8 +20,7 @@
         orientation-stream (->> input/orientation-stream
                                 (r/map #(hash-map :orientation %)))]
     (->> (r/merge mouse-stream orientation-stream in-stream)
-         ;;TODO zip merge-with merge
-         (r/reduce (fn [coll event] (merge coll event)) {:orientation 0 :mouse 0 :pad 0})
+         (r/reduce (fn [coll event] (merge coll event)))
          (r/sample 50)
          (r/map #(reset! hud-state %)))
     in-stream

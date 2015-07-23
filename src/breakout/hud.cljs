@@ -83,15 +83,17 @@
 
 (go
   (loop [[matched unmatched] [[] (vec game-name)]]
-    (<! (timeout 10))
+    (<! (timeout 30))
     (when-not (empty? unmatched)
       (let [random-part (repeatedly (count unmatched) rand-char)]
         (set-text (apply str (concat matched random-part)))
-        (if (= (first random-part) (first unmatched))
+        (if (or (= (rand-int 3) 1)
+                (= (first random-part) (first unmatched)))
           (recur [(conj matched (first unmatched)) ;; If match
                   (rest unmatched)])
           (recur [matched ;; Else
                   unmatched])))))
+  (set-text game-name)
   
   ;; (<! (timeout 1000))
   ;; (reset! overlay-text "Coming...")

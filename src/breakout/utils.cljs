@@ -38,3 +38,6 @@
     (js/setTimeout (fn [] (close! c)) ms)
     c))
 
+(defn rand-char []
+  "Get random ascii character from range 33 - 90"
+  (char (+ 33 (rand-int 57))))

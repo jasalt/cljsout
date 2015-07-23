@@ -27,10 +27,6 @@ body {
     z-index:2;
 }
 
-#gameOverlay h1 {
-    font-size: 3em;
-}
-
 #hudContainer {
     margin-left: 10px;
     float:left; display:inline;

@@ -1,11 +1,15 @@
-;; Debug some values in DOM.
+;; Use DOM for showing game state notifications and debug info.
 (ns breakout.hud
   (:require
    [reagi.core :as r]
    [reagent.core :as dom]
    [breakout.input :as input]
    [breakout.config :refer [config set-input]]
+   [breakout.utils :refer [timeout rand-char]]
+   [cljs.core.async :refer [chan close!]]
    )
+  (:require-macros
+   [cljs.core.async.macros :as m :refer [go]])
   )
 
 (defonce hud-state
@@ -25,7 +29,7 @@
          (r/map #(reset! hud-state %)))
     in-stream))
 
-(defn accelerometer-view []
+(defn debug-view []
   [:div
    [:h2 "Debug"]
    [:h3 "Input"]
@@ -40,11 +44,11 @@
     " Orientation "
     (when-let [x-val (:orientation @hud-state)]
       (str "X " (:scaled x-val) " Raw " (:unscaled (:orientation @hud-state))))]
-   
+
    [:h2 "Entities"]
    [:p "Pad X " (str (:pad @hud-state))]
    (let [{:keys [x y a]} (:ball @hud-state)]
-    [:p "Ball " (str "X " x " Y " y " Angle " a)])
+     [:p "Ball " (str "X " x " Y " y " Angle " a)])
    [:p "Brick count " (str (:bricks @hud-state))]
    [:p "Last " (str (:last-brick @hud-state))]
    ])
@@ -54,5 +58,41 @@
   (r/deliver hud-update-stream msg))
 
 (dom/render-component
- [accelerometer-view]
+ [debug-view]
  (.getElementById js/document "hud"))
+
+
+(def overlay-text (dom/atom "Initial"))
+
+(defn game-overlay []
+  [:h1 @overlay-text]
+  )
+
+(dom/render-component
+ [game-overlay]
+ (.getElementById js/document "gameOverlayText")
+ )
+
+;; (doseq [char "Breakout"])
+(def game-name "Breakout")
+(defn get-variation [title]
+  )
+
+(defn set-text [text]
+  (reset! overlay-text text))
+
+(go
+  (loop [current "asdffdsa"]
+    (<! (timeout 100))
+    (set-text (apply str (repeatedly 8 rand-char)) )
+    (recur "asd")
+    )
+  
+  ;; (<! (timeout 1000))
+  ;; (reset! overlay-text "Coming...")
+  ;; (<! (timeout 1000))
+  ;; (reset! overlay-text game-name)
+  )
+
+
+;; (swap! @overlay-text)

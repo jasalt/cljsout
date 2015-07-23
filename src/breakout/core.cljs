@@ -17,9 +17,10 @@
 (defn init! []
   (canvas/add-entity game-canvas :ball-entity ball-entity)
   (canvas/add-entity game-canvas :pad-entity pad-entity)
-  (canvas/draw-loop game-canvas)
   )
 
+(defn start! []
+  (canvas/draw-loop game-canvas))
 
 (defn pause! []
   (if @(:updating? game-canvas)
@@ -32,7 +33,6 @@
   ;; optionally touch your game-state to force rerendering depending on
   ;; your application
   ;; (swap! game-state update-in [:__figwheel_counter] inc)
-
   )
 
 (set! (.-onload js/window) init!)

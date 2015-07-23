@@ -1,16 +1,20 @@
 * Clojurescript breakout clone
-Ongoing learning project on #{functional reactive game} programming.
+Ongoing learning project on #{functional reactive game} programming. Try it out from provided links, it works on current desktop/mobile web browsers.
 
 Input from mouse, keyboard and device accelerometer is handled with event streams provided by reagi/coreasync. Game is drawn on 2D canvas with monet library. HUD is drawn on DOM with reagent/react.js.
 
 License: GPLv3
 
-* Running
+* Development
 1) Clone repo and navigate to project folder
 2) run `lein figwheel dev`
 3) Open http://localhost:3449 after jvm has warmed up.
 
 * Live development previews
+** (23.7. commit 33f5f17)
+http://jasalt.github.io/games/cljsout-3-33f5f17/
+- Pretty layout
+- Print state values with react instead of canvas
 ** (23.7. commit 42228e3)
 http://jasalt.github.io/games/cljsout-2-42228e3/
 - More collisions

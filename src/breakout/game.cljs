@@ -59,7 +59,7 @@
     )
   )
 
-(build-level)
+
 
 (defn remove-brick! [canvas brick-key]
   (canvas/remove-entity canvas brick-key)

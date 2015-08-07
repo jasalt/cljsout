@@ -17,6 +17,7 @@
 (defn init! []
   (canvas/add-entity game-canvas :ball-entity ball-entity)
   (canvas/add-entity game-canvas :pad-entity pad-entity)
+  (breakout.game/build-level)
   (breakout.hud/startup-title-animation)
   )
 

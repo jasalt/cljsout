@@ -1,5 +1,6 @@
 * Notes
 ** Canvas Benchmark
+(not comparable between devices)
 http://www.kevs3d.co.uk/dev/canvasmark/
 | Machine         | Browser      | Score | Notes                 |
 |-----------------+--------------+-------+-----------------------|
@@ -13,23 +14,27 @@ http://www.kevs3d.co.uk/dev/canvasmark/
 | Z2              | Opera        | ~4500 |                       |
 * Tasks
 ** HUD
-*** Input chooser
+*** DONE Input chooser
 Reagent atom for switch-able configurations?
-*** Debug screen
+*** DONE Debug screen
+**** Game startup after clicking
+** Game lifecycle management
 *** Startup screen
-**** TODO Cool font
+**** DONE Cool font
 **** Hud system with reagent
 - startup notification
 - text notifications
 - points
 - level number
+*** Change levels
+*** Finish game after time is up
+*** Restart
 ** Brick collision
-*** DONE Check
+*** DONE Check collision
 *** TODO Change angle
-*** Points
+*** Points to game state
 ** Paddle collision
-*** Set angle by collision point.
-** Change levels
+*** Set angle by collision point
 ** Ball speedup
 ** Bugs
 *** Angle mirroring
@@ -48,3 +53,6 @@ Thorttling event stream?
 ** [#B] Advanced features
 *** Time manipulation
 Slowdown/reverse time...
+*** Rewrite with native mobile apis
+- Clojure Android
+- React Native?

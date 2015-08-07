@@ -80,8 +80,9 @@
 
       (geom/collision? @ball (update-in @pad [:x] #(- % (/ (@pad :w) 2))))
       (mirror-horizontal! ball) ;; TODO bounce properly on some direction
-
+      
       :else ;; Check bricks
+      
       (let [canvas breakout.game/game-canvas
             game-entities (canvas :entities)
             brick-keys (descendants ::breakout.game/brick)
@@ -90,10 +91,12 @@
                         brick-keys)
             colliding-brick (some #(if (geom/collision? @ball (second %)) %)
                                   bricks)]
+        
         (when colliding-brick
           (breakout.game/remove-brick! canvas (first colliding-brick))
           (breakout.hud/tell-hud {:bricks (- (count bricks) 1)
                                   :last-brick colliding-brick})
+          
           ;;(print (nearest-side @ball colliding-brick))
           ;;TODO calculate nearest side and mirror ball angle accordingly
           )

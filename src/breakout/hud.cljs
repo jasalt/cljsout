@@ -62,7 +62,7 @@
  (.getElementById js/document "hud"))
 
 
-(defonce overlay-text (dom/atom "It's"))
+(defonce overlay-text (dom/atom ""))
 
 (defn game-overlay []
   [:h1 @overlay-text]
@@ -81,6 +81,7 @@
 (defn startup-title-animation []
   "Run fancy startup title animation."
   (let [game-name "BREAKOUT"]
+    (set-text "It's")
     (go
       (loop [[matched unmatched] [[] (vec game-name)]]
         (<! (timeout 30))

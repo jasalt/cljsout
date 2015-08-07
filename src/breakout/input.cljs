@@ -7,6 +7,8 @@
    [breakout.physics :refer [move-to! move-right! move-left!]]
    ))
 
+;; Avoid circular dependency of require
+(def pause! #(breakout.core.pause!))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup controls
@@ -55,7 +57,7 @@
 (->> active-keys-stream
      (r/filter (partial some #{PAUSE SPACE}))
      (r/throttle 100) ;; simple debounce
-     (r/map #(breakout.core/pause!))
+     (r/map #(pause!))
      )
 
 ;;(filter-map #{RIGHT} move-right! pad)
@@ -129,4 +131,5 @@
 (defonce pad-position-stream
   (->> (r/merge mouse-position-stream
                 (->> orientation-stream (r/map :scaled)))
-       (r/map #(move-to! breakout.game/pad %))))
+       
+       ))

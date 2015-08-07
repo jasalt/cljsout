@@ -8,6 +8,9 @@
    [cljs.core.async.macros :as m :refer [go]])
   )
 
+;; Avoid circular dependency of require
+(def game-canvas #(identity breakout.game.game-canvas))
+
 (defn log [msg]
   (.log js/console (pprint msg))
   )
@@ -23,14 +26,14 @@
   [(.-innerWidth js/window) (.-innerHeight js/window)])
 
 (defn get-canvas-size []
-  (let [canvas (breakout.game/game-canvas :canvas)]
-    [(.-width canvas) (.-height canvas)]  
+  (let [canvas ((game-canvas) :canvas)]
+    [(.-width canvas) (.-height canvas)]
     ))
 
 (defn scale-value [x [x-min x-max] [to-min to-max]]
   "Scale given value thats between x-min and x-max to range to-min to-max.
    TODO bug-ridden"
-  (let [portion (/ (.abs js/Math (- x x-min)) (- x-max x-min))] 
+  (let [portion (/ (.abs js/Math (- x x-min)) (- x-max x-min))]
     (+ to-min (* portion (- to-max to-min)))))
 
 (defn timeout [ms]

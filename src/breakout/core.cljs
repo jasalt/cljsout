@@ -6,7 +6,6 @@
      [reagi.core :as r]
 
      ;;TODO cleanup and order properly
-     [breakout.input]
      [breakout.game :refer [game-canvas ball-entity pad-entity]]
      [breakout.utils :refer [log]]
      [breakout.entities :as entities]
@@ -15,14 +14,16 @@
 (enable-console-print!) ;; Route prints to console
 
 (defn init! []
+  (breakout.game/build-level 2)
   (canvas/add-entity game-canvas :ball-entity ball-entity)
   (canvas/add-entity game-canvas :pad-entity pad-entity)
-  (breakout.game/build-level)
+  
   (breakout.hud/startup-title-animation)
   )
 
 (defn start! []
-  (canvas/draw-loop game-canvas))
+  (canvas/draw-loop game-canvas)
+  )
 
 (defn pause! []
   (if @(:updating? game-canvas)

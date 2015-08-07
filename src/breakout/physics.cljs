@@ -2,7 +2,13 @@
 (ns breakout.physics
   (:require
    [monet.canvas :as canvas]
-   [monet.geometry :as geom]))
+   [monet.geometry :as geom]
+   ))
+
+;; Avoid circular dependency of require
+(def tell-hud #(breakout.hud.tell-hud %))
+(def get-bricks #(breakout.game.get-bricks))
+(def remove-brick! #(breakout.game.remove-brick! %))
 
 (defn move-right! [pad]
   "Move pad right."
@@ -63,6 +69,22 @@
             (assoc % :distance dist))
          [top bottom left right])))
 
+(defn check-brick-collisions [monet-canvas ball]
+  (let [bricks (get-bricks)
+        colliding-brick (some #(if (geom/collision? @ball (second %)) %)
+                              bricks)]
+    (when colliding-brick
+      (remove-brick! (first colliding-brick))
+      (tell-hud {:bricks (- (count bricks) 1)
+                              :last-brick colliding-brick})
+      ;;(print (nearest-side @ball colliding-brick))
+      
+      )
+    ;;TODO calculate nearest side and mirror ball angle accordingly
+    ball
+    )
+  )
+
 (defn check-ball-collisions [monet-canvas ball pad]
   "Check if ball collides somewhere and change it's angle accordingly."
   (let [ball-x (@ball :x)
@@ -78,27 +100,10 @@
       (< ball-x border-left) (mirror-vertical! ball)
       (> ball-x border-right) (mirror-vertical! ball)
 
+      ;; Check pad
       (geom/collision? @ball (update-in @pad [:x] #(- % (/ (@pad :w) 2))))
       (mirror-horizontal! ball) ;; TODO bounce properly on some direction
-      
-      :else ;; Check bricks
-      
-      (let [canvas breakout.game/game-canvas
-            game-entities (canvas :entities)
-            brick-keys (descendants ::breakout.game/brick)
-            ;; Access as js property for performance. TODO find a better way?
-            bricks (map #(vector % ((aget game-entities (str %)) :value))
-                        brick-keys)
-            colliding-brick (some #(if (geom/collision? @ball (second %)) %)
-                                  bricks)]
-        
-        (when colliding-brick
-          (breakout.game/remove-brick! canvas (first colliding-brick))
-          (breakout.hud/tell-hud {:bricks (- (count bricks) 1)
-                                  :last-brick colliding-brick})
-          
-          ;;(print (nearest-side @ball colliding-brick))
-          ;;TODO calculate nearest side and mirror ball angle accordingly
-          )
-        )
+
+      :else;; ball
+       (check-brick-collisions monet-canvas ball)
       )))

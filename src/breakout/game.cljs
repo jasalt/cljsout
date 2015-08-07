@@ -8,7 +8,6 @@
    [breakout.entities :as entities]
    [breakout.levels :refer [get-level]]
    [breakout.hud]
-   ;;[breakout.physics]
    ))
 
 ;; (def init-state
@@ -42,32 +41,38 @@
 (def pad-entity (entities/pad-entity pad))
 (def ball-entity (entities/ball-entity game-canvas ball pad))
 
+;; Brick id's are stored as ::breakout.game/brick descendants
+
 (defn add-brick! [canvas x y]
   (let [entity-key (gensym :brick)
         brick (entities/make-brick-entity canvas
                                           entity-key
                                           {:x x :y y})]
-    (derive entity-key ::brick) ;; TODO underive when removing?
+    (derive entity-key ::brick)
     (canvas/add-entity game-canvas entity-key brick)
     ))
 
-(defn build-level []
-  (let [bricks (get-level 1)]
+(defn build-level [level-number]
+  (let [bricks (get-level level-number)]
     (doseq [[pos-x pos-y] bricks]
       (add-brick! game-canvas pos-x pos-y)
       )
-    )
-  )
+    ))
 
-
-
-(defn remove-brick! [canvas brick-key]
-  (canvas/remove-entity canvas brick-key)
+(defn remove-brick! [brick-key]
+  (canvas/remove-entity game-canvas brick-key)
   (underive brick-key ::breakout.game/brick)
 
+  ;; Change level 
   (when-not (descendants ::brick)
-    (build-level)
-    )
+    (build-level 2) ;; TODO
+    ))
+
+(defn get-bricks []
+  "Return all active bricks."
+  (when-let [brick-keys (descendants ::breakout.game/brick)]
+    (map #(vector % ((aget (game-canvas :entities) (str %)) :value))
+         brick-keys))
   )
 
 ;;;;(add-brick! game-canvas (* 35 pos-x) (* 25 pos-y))

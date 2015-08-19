@@ -57,8 +57,7 @@
 (->> active-keys-stream
      (r/filter (partial some #{PAUSE SPACE}))
      (r/throttle 100) ;; simple debounce
-     (r/map #(pause!))
-     )
+     (r/map #(pause!)))
 
 ;;(filter-map #{RIGHT} move-right! pad)
 ;;(filter-map #{LEFT} move-left! pad)
@@ -72,7 +71,8 @@
 (defn start-mouse-listener []
   (println "Starting mouse listener")
   (let [game-canvas (.getElementById js/document "game")]
-    (set! (.-onmousemove game-canvas) #(r/deliver mouse-move-stream (.-clientX %)))))
+    (set! (.-onmousemove game-canvas)
+          #(r/deliver mouse-move-stream (.-clientX %)))))
 
 (defn stop-mouse-listener []
   (println "Stopping mouse listener")
@@ -88,8 +88,7 @@
 (def mouse-position-stream
   (->> mouse-move-stream
        (r/uniq) ;; Drop duplicate events
-       (r/map #(- % mouse-x-offset))
-       ))
+       (r/map #(- % mouse-x-offset))))
 
 
 ;;;;;;;; Device Orientation
@@ -101,8 +100,7 @@
   "Need to use named function to allow removing event listener."
   (r/deliver orientation-change-stream {:gamma (.-gamma e)
                                         :alpha (.-alpha e)
-                                        :beta (.-beta e)
-                                        }))
+                                        :beta (.-beta e)}))
 (defn start-orientation-listener []
   (println "Starting orientation listener")
   (.addEventListener js/window "deviceorientation"
@@ -124,12 +122,10 @@
        (r/uniq)
        (r/map #(hash-map :scaled (->> (scale-value % [-30 30] [0 300])
                                       (.floor js/Math))
-                         :unscaled (str-float % 2)))
-       ))
+                         :unscaled (str-float % 2)))))
 
 ;; Aggregate pad positions from streams that provide them
 (defonce pad-position-stream
   (->> (r/merge mouse-position-stream
                 (->> orientation-stream (r/map :scaled)))
-       
-       ))
+       (r/map #(move-to! breakout.game/pad %))))

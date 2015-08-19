@@ -11,6 +11,9 @@
    [breakout.hud :refer [tell-hud]]
    ))
 
+;; (r/map 
+;;  #(.log js/console %) breakout.input/mouse-position-stream)
+
 (defn pad-entity [pad]
   (canvas/entity @pad
                  (fn [value] ;; Update
@@ -47,9 +50,7 @@
                      (tell-hud {:ball {:x (str-float (new-state :x))
                                        :y (str-float (new-state :y))
                                        :a (str-float (new-state :angle))}})
-                     new-state
-                     )
-                   )
+                     new-state))
                  (fn [ctx v]
                    (-> ctx
                        (canvas/fill-style "blue")
@@ -72,8 +73,7 @@
                   :w 30 :h 10}
                  (fn [value] ;; Update
                    ;; TODO
-                   value
-                   )
+                   value)
                  (fn [ctx {:keys [x y w h]} val] ;; Draw
                    (-> ctx
                        canvas/save

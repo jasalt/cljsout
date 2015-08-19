@@ -8,8 +8,7 @@
      ;;TODO cleanup and order properly
      [breakout.game :refer [game-canvas ball-entity pad-entity]]
      [breakout.utils :refer [log]]
-     [breakout.entities :as entities]
-     ))
+     [breakout.entities :as entities]))
 
 (enable-console-print!) ;; Route prints to console
 
@@ -18,12 +17,10 @@
   (canvas/add-entity game-canvas :ball-entity ball-entity)
   (canvas/add-entity game-canvas :pad-entity pad-entity)
   
-  (breakout.hud/startup-title-animation)
-  )
+  (breakout.hud/startup-title-animation))
 
 (defn start! []
-  (canvas/draw-loop game-canvas)
-  )
+  (canvas/draw-loop game-canvas))
 
 (defn pause! []
   (if @(:updating? game-canvas)

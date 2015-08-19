@@ -3,8 +3,8 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.7.0-RC2"]
-                 [org.clojure/clojurescript "0.0-3255"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 [org.clojure/clojurescript "1.7.107"]
                  [com.cemerick/clojurescript.test "0.3.3"]
                  [reagi "0.10.1"         ;; FRP library based on core.async
                   :exclusions [org.clojure/clojure]]

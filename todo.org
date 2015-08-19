@@ -51,6 +51,10 @@ Some simple effect. Maybe on other canvas layer.
 Currently accelerometer input is lagging on mobile device.
 Thorttling event stream?
 ** [#B] Advanced features
+*** Rule selector
+- Default breakout style
+- ADHD breakout style
+- ...
 *** Time manipulation
 Slowdown/reverse time...
 *** Rewrite with native mobile apis

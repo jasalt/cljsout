@@ -4,7 +4,8 @@
      [clojure.set :as set]
      [monet.canvas :as canvas]
      [reagi.core :as r]
-
+     [weasel.repl :as repl]
+     
      ;;TODO cleanup and order properly
      [breakout.game :refer [game-canvas ball-entity pad-entity]]
      [breakout.utils :refer [log]]
@@ -12,12 +13,14 @@
 
 (enable-console-print!) ;; Route prints to console
 
+(repl/connect "ws://localhost:9001")
+
 (defn init! []
-  (breakout.game/build-level 2)
+  (breakout.game/build-level 1)
   (canvas/add-entity game-canvas :ball-entity ball-entity)
   (canvas/add-entity game-canvas :pad-entity pad-entity)
-  
-  (breakout.hud/startup-title-animation))
+  ;; (breakout.hud/startup-title-animation)
+  )
 
 (defn start! []
   (canvas/draw-loop game-canvas))

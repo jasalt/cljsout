@@ -1,3 +1,4 @@
+;; Handle input and update state accordingly
 (ns breakout.input
   (:require
    [reagi.core :as r]

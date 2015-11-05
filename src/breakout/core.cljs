@@ -1,4 +1,4 @@
-;; Initialize game
+;; Entry point. Define entities, bind update and draw f's and initialize game.
 (ns ^:figwheel-always breakout.core
   (:require
    [clojure.set :as set]

@@ -106,6 +106,8 @@
       (check-brick-collisions monet-canvas ball)
       )))
 
+
+
 (defn ball [value monet-canvas ball pad]
   ;; Remove after out of view
   (check-ball-collisions monet-canvas ball pad)

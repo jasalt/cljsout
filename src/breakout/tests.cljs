@@ -1,3 +1,4 @@
+;; Tests for some parts
 (ns breakout.tests
   (:require-macros
    [cemerick.cljs.test :refer (is deftest with-test run-tests

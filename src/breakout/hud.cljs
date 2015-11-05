@@ -1,4 +1,4 @@
-;; Use DOM for showing game state notifications and debug info.
+;; Handle HTML DOM with Reagent for game notification and debug info texts.
 (ns breakout.hud
   (:require
    [reagi.core :as r]
@@ -6,11 +6,9 @@
    [breakout.input :as input]
    [breakout.input :refer [config set-input]]
    [breakout.utils :refer [timeout rand-char]]
-   [cljs.core.async :refer [chan close!]]
-   )
+   [cljs.core.async :refer [chan close!]])
   (:require-macros
-   [cljs.core.async.macros :as m :refer [go]])
-  )
+   [cljs.core.async.macros :as m :refer [go]]))
 
 (defonce hud-state
   (dom/atom
@@ -61,7 +59,6 @@
  [debug-view]
  (.getElementById js/document "hud"))
 
-
 (defonce overlay-text (dom/atom ""))
 
 (defn game-overlay []
@@ -70,10 +67,7 @@
 
 (dom/render-component
  [game-overlay]
- (.getElementById js/document "gameOverlayText")
- )
-
-
+ (.getElementById js/document "gameOverlayText"))
 
 (defn set-text [text]
   (reset! overlay-text text))

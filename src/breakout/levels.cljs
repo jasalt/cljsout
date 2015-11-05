@@ -1,3 +1,4 @@
+;; Level descriptions, parser and utilities
 (ns breakout.levels
   (:require [breakout.utils :refer [log]])
   )
@@ -55,9 +56,4 @@
   {:pre [(number? num)]}
   (-> (nth levels (dec num))
       parse-level-str
-      parse-level)
-  )
-
-
-
-;;(print (get-level 1))
+      parse-level))

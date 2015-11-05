@@ -1,3 +1,4 @@
+;; Utility functions
 (ns breakout.utils
   (:require [cljs.pprint :refer [pprint]]
             [goog.string :as gstring]

@@ -4,7 +4,7 @@
    [reagi.core :as r]
    [reagent.core :as dom]
    [breakout.input :as input]
-   [breakout.config :refer [config set-input]]
+   [breakout.input :refer [config set-input]]
    [breakout.utils :refer [timeout rand-char]]
    [cljs.core.async :refer [chan close!]]
    )

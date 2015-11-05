@@ -5,12 +5,11 @@
    [monet.geometry :as geom]
    ))
 
-
 ;; Avoid circular dependency of require
 (defonce tell-hud #(breakout.hud.tell-hud %))
 (defonce get-bricks #(breakout.core.get-bricks))
 (defonce remove-brick! #(breakout.core.remove-brick! %))
- 
+
 (defn move-right! [pad]
   "Move pad right."
   (swap! pad update-in [:x] inc))
@@ -19,10 +18,10 @@
   "Move pad right."
   (swap! pad update-in [:x] dec))
 
-(defn move-to! [pad pos]
+(defn move-to! [pos]
   "Move pad to given position.
    TODO Smooth out"
-  (swap! pad assoc :x pos))
+  (swap! breakout.core.pad assoc :x pos))
 
 (def ball-speed 100) ;; TODO speed increase bug.
 
@@ -76,11 +75,8 @@
           (mirror-horizontal! ball)
           )
         )
-
-
       ;; jos distance keskelle on pidempi kuin puoli leveyttä -> vertical-mirror
       ;;(print (nearest-side @ball colliding-brick))
-
       )
     ;;TODO calculate nearest side and mirror ball angle accordingly
     ball

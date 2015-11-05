@@ -9,7 +9,7 @@
 
 ;; Avoid circular dependency of require
 (def pause! #(breakout.core.pause!))
-(def pad #(breakout.core.pad %))
+;;(def pad #(breakout.core.pad))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup controls
@@ -129,5 +129,53 @@
 (defonce pad-position-stream
   (->> (r/merge mouse-position-stream
                 (->> orientation-stream (r/map :scaled)))
-       ;;(r/map #(move-to! pad %))
+       (r/map #(move-to! %))
+       
        ))
+
+
+
+;;;;; Initial input config
+
+(def initial-config
+  {:input {:mouse
+           {:active false
+            :toggle-fn (fn [new-state]
+                         (if new-state
+                           (breakout.input/start-mouse-listener)
+                           (breakout.input/stop-mouse-listener)
+                           ))}
+           :orientation
+           {:active false
+            :toggle-fn (fn [new-state]
+                         (if new-state
+                           (breakout.input/start-orientation-listener)
+                           (breakout.input/stop-orientation-listener)
+                           ))}}
+   :game {:running true}})
+
+(defonce config (atom initial-config))
+
+(def default-inputs [:mouse])
+
+;; Control game config from dom
+
+(defn set-config [new-state & path]
+  "Set config value to new state."
+  (let [path-vec (into [] path)] (swap! config assoc-in path-vec new-state)))
+
+(defn set-input [input-type new-state]
+  "Input type is :mouse or :orientation. Runs side effective toggle-fn for given
+   input and changes it's config atom value that's connected to view."
+  (let [toggle-fn (-> @config :input input-type :toggle-fn)]
+    (set-config new-state :input input-type :active)
+    (toggle-fn new-state)))
+
+(defn set-initial-inputs! []
+  (doseq [input default-inputs]
+    (if-not (-> @config :input input :active)
+      (set-input input true)
+      (print (str input" already active, skipping"))))) 
+
+;; Hacky function call for setting initial inputs
+(set! (.-onload js/window) (js/setTimeout set-initial-inputs! 1000))

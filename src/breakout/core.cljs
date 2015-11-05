@@ -1,20 +1,20 @@
 ;; Initialize game
 (ns ^:figwheel-always breakout.core
-    (:require
-     [clojure.set :as set]
-     [monet.canvas :as canvas]
-     [reagi.core :as r]
-     [weasel.repl :as repl]
-     
-     ;;TODO cleanup and order properly
-     
-     [breakout.utils :refer [log str-float]]
-     [breakout.draw :as draw]
-     [breakout.levels :refer [get-level]]
-     
-     [breakout.update :as update]
-     [breakout.hud :refer [tell-hud]]
-     ))
+  (:require
+   [clojure.set :as set]
+   [monet.canvas :as canvas]
+   [reagi.core :as r]
+   [weasel.repl :as repl]
+
+   ;;TODO cleanup and order properly
+
+   [breakout.utils :refer [log str-float]]
+   [breakout.draw :as draw]
+   [breakout.levels :refer [get-level]]
+
+   [breakout.update :as update]
+   [breakout.hud :refer [tell-hud]]
+   ))
 
 (enable-console-print!) ;; Route prints to console
 
@@ -23,7 +23,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup game area and entities
 
-(defonce preferences {:pad {:width 30 :height 15}
+(defonce dimensions {:pad {:width 50 :height 4}
                       :ball {:size 3}})
 
 (defonce canvas-dom (.getElementById js/document "game"))
@@ -32,50 +32,32 @@
 
 (defn make-pad-entity [pad]
   (canvas/entity @pad
-                 (fn [value] ;; Update
-                   ;; TODO get input state from sliding buffer on every draw?
-                   (let [new-state (-> value
-                                       (assoc :x (@pad :x))
-                                       (assoc :y (@pad :y)))]
+                 (fn [old-state]
+                   (let [new-state (-> old-state (assoc :x (@pad :x)))]
                      (tell-hud {:pad (new-state :x)})
-                     new-state))
-                 draw/pad
-                 ))
+                     new-state)) draw/pad))
 
 (defn make-ball-entity [monet-canvas ball pad]
   (canvas/entity @ball
-                 (fn [value]
-                   ;; Remove after out of view
-                   (update/check-ball-collisions monet-canvas ball pad)
-                   (update/move-ball! ball)
-                   (let [new-state (-> value
-                             (assoc :x (@ball :x))
-                             (assoc :y (@ball :y))
-                             (assoc :angle (@ball :angle)))]
+                 (fn [old-state]
+                   (let [new-state (update/ball old-state monet-canvas ball pad)]
                      (tell-hud {:ball {:x (str-float (new-state :x))
                                        :y (str-float (new-state :y))
                                        :a (str-float (new-state :angle))}})
-                     new-state))
-                 draw/ball))
+                     new-state)) draw/ball))
 
-(defn make-brick-entity [canvas entity-key
-                         {pos-x :x pos-y :y}]
-  (canvas/entity {:x pos-x :y pos-y
-                  :w 30 :h 10}
-                 (fn [value] ;; Update
-                   ;; TODO
-                   value)
-                 draw/brick))
+(defn make-brick-entity [canvas entity-key {pos-x :x pos-y :y}]
+  (canvas/entity {:x pos-x :y pos-y :w 30 :h 10} nil draw/brick))
 
 ;; Initial values for game entities
 (def pad (atom {:x (/ (.-width (:canvas game-canvas)) 2)
                 :y (- (.-height (:canvas game-canvas)) 20)
-                :w 50 :h 3
+                :w (:width (:pad dimensions)) :h (:height (:pad dimensions))
                 }))
 
 (def ball (atom {:x (/ (.-width (:canvas game-canvas)) 3)
                  :y (/ (.-height (:canvas game-canvas)) 3)
-                 :w 3 :h 3
+                 :w (:size (:ball dimensions)) :h (:size (:ball dimensions))
                  :angle (* Math/PI 1.6)}))
 
 (def pad-entity (make-pad-entity pad))
@@ -86,8 +68,8 @@
 (defn add-brick! [canvas x y]
   (let [entity-key (gensym :brick)
         brick (make-brick-entity canvas
-                                          entity-key
-                                          {:x x :y y})]
+                                 entity-key
+                                 {:x x :y y})]
     (derive entity-key ::brick)
     (canvas/add-entity game-canvas entity-key brick)
     ))
@@ -103,7 +85,7 @@
   (canvas/remove-entity game-canvas brick-key)
   (underive brick-key ::breakout.game/brick)
 
-  ;; Change level 
+  ;; Change level
   (when-not (descendants ::brick)
     (build-level 2) ;; TODO
     ))
@@ -112,16 +94,15 @@
   "Return all active bricks."
   (when-let [brick-keys (descendants ::breakout.game/brick)]
     (map #(vector % ((aget (game-canvas :entities) (str %)) :value))
-         brick-keys))
-  )
+         brick-keys)))
 
-;;;;(add-brick! game-canvas (* 35 pos-x) (* 25 pos-y))
-;;(build-level 1)
+;;;;(add-brick! game-canvas (* 50 pos-x) (* 25 pos-y))
+;;(build-level 2)
 
 ;;;;;;;;;;;;;;;;;;;; Initialize and control game loop
 
 (defn init! []
-  (build-level 1)
+  (build-level 2)
   (canvas/add-entity game-canvas :ball-entity ball-entity)
   (canvas/add-entity game-canvas :pad-entity pad-entity)
   ;; (breakout.hud/startup-title-animation)

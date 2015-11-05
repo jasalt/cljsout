@@ -8,9 +8,12 @@
      
      ;;TODO cleanup and order properly
      
-     [breakout.utils :refer [log]]
-     [breakout.entities :as entities]
+     [breakout.utils :refer [log str-float]]
+     [breakout.draw :as draw]
      [breakout.levels :refer [get-level]]
+     
+     [breakout.physics :as p]
+     [breakout.hud :refer [tell-hud]]
      ))
 
 (enable-console-print!) ;; Route prints to console
@@ -26,6 +29,44 @@
 (defonce canvas-dom (.getElementById js/document "game"))
 (defonce game-canvas (canvas/init canvas-dom "2d"))
 
+
+(defn make-pad-entity [pad]
+  (canvas/entity @pad
+                 (fn [value] ;; Update
+                   ;; TODO get input state from sliding buffer on every draw?
+                   (let [new-state (-> value
+                                       (assoc :x (@pad :x))
+                                       (assoc :y (@pad :y)))]
+                     (tell-hud {:pad (new-state :x)})
+                     new-state))
+                 draw/pad
+                 ))
+
+(defn make-ball-entity [monet-canvas ball pad]
+  (canvas/entity @ball
+                 (fn [value]
+                   ;; Remove after out of view
+                   (p/check-ball-collisions monet-canvas ball pad)
+                   (p/move-ball! ball)
+                   (let [new-state (-> value
+                             (assoc :x (@ball :x))
+                             (assoc :y (@ball :y))
+                             (assoc :angle (@ball :angle)))]
+                     (tell-hud {:ball {:x (str-float (new-state :x))
+                                       :y (str-float (new-state :y))
+                                       :a (str-float (new-state :angle))}})
+                     new-state))
+                 draw/ball))
+
+(defn make-brick-entity [canvas entity-key
+                         {pos-x :x pos-y :y}]
+  (canvas/entity {:x pos-x :y pos-y
+                  :w 30 :h 10}
+                 (fn [value] ;; Update
+                   ;; TODO
+                   value)
+                 draw/brick))
+
 ;; Initial values for game entities
 (def pad (atom {:x (/ (.-width (:canvas game-canvas)) 2)
                 :y (- (.-height (:canvas game-canvas)) 20)
@@ -37,14 +78,14 @@
                  :w 3 :h 3
                  :angle (* Math/PI 1.6)}))
 
-(def pad-entity (entities/pad-entity pad))
-(def ball-entity (entities/ball-entity game-canvas ball pad))
+(def pad-entity (make-pad-entity pad))
+(def ball-entity (make-ball-entity game-canvas ball pad))
 
 ;; Brick id's are stored as ::breakout.game/brick descendants
 
 (defn add-brick! [canvas x y]
   (let [entity-key (gensym :brick)
-        brick (entities/make-brick-entity canvas
+        brick (make-brick-entity canvas
                                           entity-key
                                           {:x x :y y})]
     (derive entity-key ::brick)

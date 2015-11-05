@@ -1,0 +1,2 @@
+;; Analyzed by ClojureScript 1.7.145
+{:name monet.core, :doc nil, :excludes #{}, :use-macros nil, :require-macros nil, :uses nil, :requires nil, :imports nil, :defs {animation-frame {:name monet.core/animation-frame, :file "resources/public/js/compiled/out/monet/core.cljs", :line 3, :column 1, :end-line 3, :end-column 21, :meta {:file "/Users/js/dev/cljsout/resources/public/js/compiled/out/monet/core.cljs", :line 3, :column 6, :end-line 3, :end-column 21}}}}

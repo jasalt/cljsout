@@ -9,6 +9,7 @@
 
 ;; Avoid circular dependency of require
 (def pause! #(breakout.core.pause!))
+(def pad #(breakout.core.pad %))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup controls
@@ -128,5 +129,5 @@
 (defonce pad-position-stream
   (->> (r/merge mouse-position-stream
                 (->> orientation-stream (r/map :scaled)))
-       (r/map #(move-to! breakout.game/pad %))
+       ;;(r/map #(move-to! pad %))
        ))

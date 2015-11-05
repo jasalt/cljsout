@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [org.clojure/clojurescript "1.7.122"]
+                 [org.clojure/clojurescript "1.7.145"]
                  [com.cemerick/clojurescript.test "0.3.3"]
                  [reagi "0.10.1"         ;; FRP library based on core.async
                   :exclusions [[com.cemerick/piggieback] [org.clojure/clojure]]]
@@ -19,7 +19,7 @@
   :plugins [;; [lein-cljsbuild "1.0.5"]
             [lein-figwheel "0.4.1" :exclusions [org.codehaus.plexus/plexus-utils]]]
   :source-paths ["src"]
-  :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
+  :clean-targets ^{:protect false} ["resources/public/js/compiled" "out" "target"]
   :cljsbuild {
               :builds [{:id "dev"
                         :source-paths ["src"]

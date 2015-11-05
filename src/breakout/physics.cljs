@@ -5,11 +5,12 @@
    [monet.geometry :as geom]
    ))
 
-;; Avoid circular dependency of require
-(def tell-hud #(breakout.hud.tell-hud %))
-(def get-bricks #(breakout.game.get-bricks))
-(def remove-brick! #(breakout.game.remove-brick! %))
 
+;; Avoid circular dependency of require
+(defonce tell-hud #(breakout.hud.tell-hud %))
+(defonce get-bricks #(breakout.core.get-bricks))
+(defonce remove-brick! #(breakout.core.remove-brick! %))
+ 
 (defn move-right! [pad]
   "Move pad right."
   (swap! pad update-in [:x] inc))
@@ -19,7 +20,8 @@
   (swap! pad update-in [:x] dec))
 
 (defn move-to! [pad pos]
-  "Move pad to given position."
+  "Move pad to given position.
+   TODO Smooth out"
   (swap! pad assoc :x pos))
 
 (def ball-speed 100) ;; TODO speed increase bug.
@@ -57,28 +59,28 @@
   (let [angle (@ball :angle)]
     (swap! ball assoc :angle (- angle))))
 
-;; TODO
-(defn nearest-side [obj1 {x2 :x y2 :y w2 :w h2 :h}]
-  "Check which side of second object is nearest to center of first object."
-  ;; Colliding object side points
-  (let [top    {:x (+ x2 (/ w2 2)) :y y2}
-        bottom {:x (+ x2 (/ w2 2)) :y (+ y2 w2)}
-        left   {:x x2              :y (+ y2 (/ w2 2))}
-        right  {:x (+ x2 w2)       :y (+ y2 (/ w2 2))}]
-    (map #(let [dist (geom/distance obj1 %)]
-            (assoc % :distance dist))
-         [top bottom left right])))
-
 (defn check-brick-collisions [monet-canvas ball]
   (let [bricks (get-bricks)
         colliding-brick (some #(if (geom/collision? @ball (second %)) %)
                               bricks)]
     (when colliding-brick
+      ;;(js* "debugger;")
       (remove-brick! (first colliding-brick))
       (tell-hud {:bricks (- (count bricks) 1)
-                              :last-brick colliding-brick})
+                 :last-brick colliding-brick})
+      ;; TODO very raw.
+      (let [from-brick-center (- (:x ball) (:x colliding-brick))]
+        (print (str from-brick-center))
+        (if (< 14 from-brick-center)
+          (mirror-vertical! ball)
+          (mirror-horizontal! ball)
+          )
+        )
+
+
+      ;; jos distance keskelle on pidempi kuin puoli leveyttä -> vertical-mirror
       ;;(print (nearest-side @ball colliding-brick))
-      
+
       )
     ;;TODO calculate nearest side and mirror ball angle accordingly
     ball
@@ -105,5 +107,5 @@
       (mirror-horizontal! ball) ;; TODO bounce properly on some direction
 
       :else;; ball
-       (check-brick-collisions monet-canvas ball)
+      (check-brick-collisions monet-canvas ball)
       )))

@@ -12,7 +12,7 @@
      [breakout.draw :as draw]
      [breakout.levels :refer [get-level]]
      
-     [breakout.physics :as p]
+     [breakout.update :as update]
      [breakout.hud :refer [tell-hud]]
      ))
 
@@ -46,8 +46,8 @@
   (canvas/entity @ball
                  (fn [value]
                    ;; Remove after out of view
-                   (p/check-ball-collisions monet-canvas ball pad)
-                   (p/move-ball! ball)
+                   (update/check-ball-collisions monet-canvas ball pad)
+                   (update/move-ball! ball)
                    (let [new-state (-> value
                              (assoc :x (@ball :x))
                              (assoc :y (@ball :y))

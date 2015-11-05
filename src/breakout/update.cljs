@@ -1,5 +1,5 @@
-;; View control logic for entities.
-(ns breakout.physics
+;; Control logic
+(ns breakout.update
   (:require
    [monet.canvas :as canvas]
    [monet.geometry :as geom]
@@ -105,3 +105,14 @@
       :else;; ball
       (check-brick-collisions monet-canvas ball)
       )))
+
+(defn ball [value monet-canvas ball pad]
+  ;; Remove after out of view
+  (check-ball-collisions monet-canvas ball pad)
+  (move-ball! ball)
+  (let [new-state (-> value
+                      (assoc :x (@ball :x))
+                      (assoc :y (@ball :y))
+                      (assoc :angle (@ball :angle)))]
+    
+    new-state))

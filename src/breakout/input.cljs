@@ -4,7 +4,8 @@
    [monet.canvas :as canvas]
    [goog.events :as g-events]
    [breakout.utils :refer [scale-value str-float]]
-   [breakout.physics :refer [move-to! move-right! move-left!]]
+   [breakout.update :refer [move-to! ;; move-right! move-left!
+                            ]]
    ))
 
 ;; Avoid circular dependency of require
@@ -130,7 +131,6 @@
   (->> (r/merge mouse-position-stream
                 (->> orientation-stream (r/map :scaled)))
        (r/map #(move-to! %))
-       
        ))
 
 

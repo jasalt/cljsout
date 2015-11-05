@@ -81,23 +81,11 @@
       )
     ))
 
-(defn remove-brick! [brick-key]
-  (canvas/remove-entity game-canvas brick-key)
-  (underive brick-key ::breakout.game/brick)
-
-  ;; Change level
-  (when-not (descendants ::brick)
-    (build-level 2) ;; TODO
-    ))
-
 (defn get-bricks []
   "Return all active bricks."
-  (when-let [brick-keys (descendants ::breakout.game/brick)]
+  (when-let [brick-keys (descendants ::brick)]
     (map #(vector % ((aget (game-canvas :entities) (str %)) :value))
          brick-keys)))
-
-;;;;(add-brick! game-canvas (* 50 pos-x) (* 25 pos-y))
-;;(build-level 2)
 
 ;;;;;;;;;;;;;;;;;;;; Initialize and control game loop
 

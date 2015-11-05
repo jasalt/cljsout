@@ -5,11 +5,6 @@
    [monet.geometry :as geom]
    ))
 
-;; Avoid circular dependency of require
-(defonce tell-hud #(breakout.hud.tell-hud %))
-(defonce get-bricks #(breakout.core.get-bricks))
-(defonce remove-brick! #(breakout.core.remove-brick! %))
-
 (defn move-right! [pad]
   "Move pad right."
   (swap! pad update-in [:x] inc))
@@ -23,7 +18,7 @@
    TODO Smooth out"
   (swap! breakout.core.pad assoc :x pos))
 
-(def ball-speed 100) ;; TODO speed increase bug.
+(def ball-speed 200) ;; TODO speed increase bug.
 
 (defn calculate-x [angle]
   "Calculate movement vector y component."
@@ -58,19 +53,29 @@
   (let [angle (@ball :angle)]
     (swap! ball assoc :angle (- angle))))
 
+;; Avoid circular dependency of require
+(defonce tell-hud #(breakout.hud.tell-hud %))
+(defonce get-bricks #(breakout.core.get-bricks))
+(defonce build-level #(breakout.core.build-level %))
+
 (defn check-brick-collisions [monet-canvas ball]
   (let [bricks (get-bricks)
         colliding-brick (some #(if (geom/collision? @ball (second %)) %)
                               bricks)]
     (when colliding-brick
-      ;;(js* "debugger;")
-      (remove-brick! (first colliding-brick))
+      ;; TODO why not working in core ns?
+      (underive (first colliding-brick) ::breakout.core/brick)
+      (canvas/remove-entity monet-canvas (first colliding-brick))
+      ;; Change level
+      (when-not (descendants ::breakout.core/brick)
+        (build-level 2))
+      
       (tell-hud {:bricks (- (count bricks) 1)
                  :last-brick colliding-brick})
       ;; TODO very raw.
-      (let [from-brick-center (- (:x ball) (:x colliding-brick))]
-        (print (str from-brick-center))
-        (if (< 14 from-brick-center)
+      (let [from-brick-center (- (:x ball) (+ (:x colliding-brick) 15))]
+        ;;(print (str from-brick-center))
+        (if (< 10 from-brick-center)
           (mirror-vertical! ball)
           (mirror-horizontal! ball)
           )
@@ -78,12 +83,13 @@
       ;; jos distance keskelle on pidempi kuin puoli leveyttä -> vertical-mirror
       ;;(print (nearest-side @ball colliding-brick))
       )
+
     ;;TODO calculate nearest side and mirror ball angle accordingly
     ball
     )
   )
 
-(defn check-ball-collisions [monet-canvas ball pad]
+(defn ball [value monet-canvas ball pad]
   "Check if ball collides somewhere and change it's angle accordingly."
   (let [ball-x (@ball :x)
         ball-y (@ball :y)
@@ -102,19 +108,13 @@
       (geom/collision? @ball (update-in @pad [:x] #(- % (/ (@pad :w) 2))))
       (mirror-horizontal! ball) ;; TODO bounce properly on some direction
 
-      :else;; ball
+      :else
       (check-brick-collisions monet-canvas ball)
-      )))
+      ))
 
-
-
-(defn ball [value monet-canvas ball pad]
-  ;; Remove after out of view
-  (check-ball-collisions monet-canvas ball pad)
   (move-ball! ball)
   (let [new-state (-> value
                       (assoc :x (@ball :x))
                       (assoc :y (@ball :y))
                       (assoc :angle (@ball :angle)))]
-    
     new-state))

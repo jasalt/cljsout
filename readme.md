@@ -1,5 +1,7 @@
 # ClojureScript breakout clone
 
+![cljsout](https://github.com/jasalt/cljsout/assets/2306521/16b3c842-11a0-446b-ae30-04503e79bf27)
+
 2015 learning project on #{functional reactive game} programming. Input from mouse, keyboard and device accelerometer is handled with event streams provided by reagi/coreasync. Game is drawn on 2D canvas with monet library. HUD is drawn on DOM with reagent/react.js. Accelerometer used to work with 2011 Macbook Pro but nowadays works only on mobile devices.
 
 # Try it out

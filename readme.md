@@ -17,7 +17,7 @@ Then open http://localhost:8000/.
 
 # Development & Building
 
-*Does not build anymore* as Reagi library got abandoned around 2014 and depends on older core/async version etc. There is a fork from 2018 that might work https://github.com/chourave/reagi/tree/release-0.11.0 but requires loading it in custom way with Leiningen `project.clj`. Converting this project plus 2017 Reagi fork to more modern `deps.edn` does not seem to be worth it.
+**Does not build anymore** as Reagi library got abandoned around 2014 and depends on older core/async version etc. There is a fork from 2018 that might work https://github.com/chourave/reagi/tree/release-0.11.0 but requires loading it in custom way with Leiningen `project.clj`. Converting this project plus 2018 Reagi fork to more modern `deps.edn` does not seem to be worth it.
 
 1) Clone repo and navigate to project folder
 2) run `lein figwheel dev`
